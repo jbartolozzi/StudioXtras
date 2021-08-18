@@ -14,21 +14,29 @@ The following dependencies are necessary for running all of the features of Stud
 
 Clone or download the repository. 
 Install the python libraries to Houdini by doing the following
+
 `cd /directory/of/repository/setup/ && ./install_linux.sh`
 
 Then edit your `/home/${USER}/houdini18.5/houdini.env` file with the following
-`STUDIO_XTRAS="/directory/of/repository/StudioXtras/otls"
-HOUDINI_OTLSCAN_PATH="${STUDIO_XTRAS};&"`
+
+```
+STUDIO_XTRAS="/directory/of/repository/StudioXtras/otls"
+HOUDINI_OTLSCAN_PATH="${STUDIO_XTRAS};&"
+```
 
 ## MacOS
 
 Clone or download the repository. 
 Install the python libraries to Houdini by doing the following
+
 `cd /directory/of/repository/setup/ && ./install_macos.sh`
 
 Then edit your `/Users/${USER}/Library/Preferences/houdini/18.5/houdini.env` file with the following
-`STUDIO_XTRAS="/directory/of/repository/StudioXtras/otls"
-HOUDINI_OTLSCAN_PATH="${STUDIO_XTRAS};&"`
+
+```
+STUDIO_XTRAS="/directory/of/repository/StudioXtras/otls"
+HOUDINI_OTLSCAN_PATH="${STUDIO_XTRAS};&"
+```
 
 ## Windows
 Clone or download the repository. 
@@ -36,9 +44,10 @@ Install the python libraries to Houdini by doing the following
 Right click `install_windows.bat` and `Run as Administrator`
 
 Then edit your `C:\Users\username\Documents\houdini18.5\houdini.env` file with the following
-`STUDIO_XTRAS="/directory/of/repository/StudioXtras/otls"
-HOUDINI_OTLSCAN_PATH="${STUDIO_XTRAS};&"`
-
+```
+STUDIO_XTRAS="/directory/of/repository/StudioXtras/otls"
+HOUDINI_OTLSCAN_PATH="${STUDIO_XTRAS};&"
+```
 
 # Nodes
 
