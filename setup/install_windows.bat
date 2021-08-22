@@ -1,1 +1,1 @@
-mklink /D "C:\%username%\james\Documents\houdini18.5\python2.7libs\StudioXtras" "%~dp0..\StudioXtras\python2.7libs\StudioXtras"
+mklink /D "C:\Users\%username%\Documents\houdini18.5\python2.7libs\StudioXtras" "%~dp0..\StudioXtras\python2.7libs\StudioXtras"
