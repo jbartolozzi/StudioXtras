@@ -31,7 +31,11 @@ class NodeHelper:
 
 class RopHelper(NodeHelper):
     def getTargetOutputNode(self, node):
-        if len(node.inputs()) > 0:
+        ignore_dependancy = node.parm("ignore_dependancy")
+        if len(node.inputs()) > 0 and \
+                not (ignore_dependancy is not None \
+                and not ignore_dependancy.isDisabled() \
+                and ignore_dependancy.eval()):
             op = node.inputs()[0]
         else:
             op = hou.node(self.getParm(node, "output_driver"))
