@@ -1,9 +1,10 @@
 import hou
 import os
-import sys
 import threading
 
 from StudioXtras import utils
+reload(utils)
+
 
 def _createImageList(first_frame, last_frame, step, picture_parm, enable_denoise_postfix, denoise_postfix):
     def getExt(input):
@@ -13,15 +14,15 @@ def _createImageList(first_frame, last_frame, step, picture_parm, enable_denoise
     files_to_delete = []
     for frame in range(int(first_frame), int(last_frame + 1), int(step)):
         frame_file = picture_parm.evalAtFrame(frame)
-        
+
         if (enable_denoise_postfix):
             ext = getExt(frame_file)
             frame_file = frame_file.replace(ext, denoise_postfix + ext)
-        
+
         if not frame_file.endswith(".jpg"):
             # Create a thread to run iconvert
             jpg_frame_file = frame_file.replace(getExt(frame_file), ".jpg")
-            
+
             command = "iconvert -g auto %s %s" % (frame_file, jpg_frame_file)
             t = threading.Thread(target=utils.runCommand, args=(command,))
             threads.append(t)
@@ -46,12 +47,12 @@ def _writeFfmpegList(output_file, output_list):
 def run():
     # Boiler plate setup
     utils.makeTimestampEnv()
-    node = hou.pwd()
-    helper = utils.RopHelper("FFmpeg")
-    
+    node = hou.node("..")
+    helper = utils.RopHelper(node.name())
+
     # Find ffmpeg executable
     ffmpeg_executable = helper.executablePath("ffmpeg")
-   
+
     # Get the target ROP for source images
     op = helper.getTargetOutputNode(node)
 
@@ -71,7 +72,8 @@ def run():
     enable_denoise_postfix = helper.getParm(node, "enable_denoise_postfix")
     denoise_postfix = helper.getParm(node, "denoise_postfix")
 
-    image_list, files_to_delete = _createImageList(f1, f2, f3, picture_parm, enable_denoise_postfix, denoise_postfix)
+    image_list, files_to_delete = _createImageList(
+        f1, f2, f3, picture_parm, enable_denoise_postfix, denoise_postfix)
 
     _writeFfmpegList(list_file, image_list)
 
@@ -85,7 +87,7 @@ def run():
         os.mkdir(output_directory)
 
     command = "\"%s\" -y -r %s -f concat -i \"%s\" -r %s %s \"%s\"" % (ffmpeg_executable, fps,
-                                                           list_file, fps, node.parm("advanced_parameters").evalAsString(), output_file)
+                                                                       list_file, fps, node.parm("advanced_parameters").evalAsString(), output_file)
 
     cmd_output, cmd_err = utils.runCommand(command)
 
@@ -93,7 +95,6 @@ def run():
     for del_file in files_to_delete:
         if os.path.exists(del_file):
             os.remove(del_file)
-    
+
     if cmd_err != "" and "error" in cmd_err.lower():
         logger.error(cmd_err)
-
