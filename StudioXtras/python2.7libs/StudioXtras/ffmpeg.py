@@ -47,7 +47,7 @@ def run():
     # Boiler plate setup
     utils.makeTimestampEnv()
     node = hou.pwd()
-    helper = utils.RopHelper("Slack")
+    helper = utils.RopHelper("FFmpeg")
     
     # Find ffmpeg executable
     ffmpeg_executable = helper.executablePath("ffmpeg")

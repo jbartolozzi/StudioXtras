@@ -9,7 +9,7 @@ class NodeHelper:
         self.node_name = node_name
 
     def error(self, text):
-        err_text = "ERROR! StudioXtras:%s:\n%s" % (self.node_name, str(text))
+        err_text = "StudioXtras Error: %s\n    %s" % (self.node_name, str(text))
         sys.stderr.write(err_text + "\n")
         if "ui" in dir(hou):
             raise hou.NodeError(err_text)
