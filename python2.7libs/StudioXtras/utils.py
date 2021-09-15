@@ -48,7 +48,7 @@ class RopHelper(NodeHelper):
             op = hou.node(op.parm("source").eval())
 
         if op is None:
-            self.error("Output ROP does not exist.")
+            self.error("No output driver specified. Please connect input or select ROP from parameter.")
 
         return op
 

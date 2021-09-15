@@ -97,4 +97,4 @@ def run():
             os.remove(del_file)
 
     if cmd_err != "" and "error" in cmd_err.lower():
-        logger.error(cmd_err)
+        helper.error(cmd_err)
