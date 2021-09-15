@@ -14,8 +14,13 @@ class NodeHelper:
         if "ui" in dir(hou):
             raise hou.NodeError(err_text)
 
+    def warning(self, text):
+        print("StudioXtras Warning: %s\n    %s" % (self.node_name, text))
+        # if "ui" in dir(hou):
+        #     raise hou.NodeWarning(text)
+
     def log(self, text):
-        print("StudioXtras:%s: %s" % (self.node_name, text))
+        print("StudioXtras: %s\n    %s" % (self.node_name, text))
 
     def getParm(self, node, parm_name):
         try:
@@ -35,26 +40,36 @@ class NodeHelper:
 class RopHelper(NodeHelper):
     def getTargetOutputNode(self, node):
         ignore_dependancy = node.parm("ignore_dependancy")
+        using_input_op = False
+        output_driver_parm_text = self.getParm(node, "output_driver")
         if len(node.inputs()) > 0 and \
                 not (ignore_dependancy is not None
                      and not ignore_dependancy.isDisabled()
                      and ignore_dependancy.eval()):
             op = node.inputs()[0]
+            using_input_op = True
         else:
-            op = hou.node(self.getParm(node, "output_driver"))
+            op = hou.node(output_driver_parm_text)
 
         # Check if op is a fetch, resolve the fetch path as new op
         if op is not None and op.type().name() == "fetch":
             op = hou.node(op.parm("source").eval())
 
-        if op is None:
+        if op is None and using_input_op:
             self.error("No output driver specified. Please connect input or select ROP from parameter.")
+        elif op is None and not using_input_op and output_driver_parm_text.strip() != "":
+            self.error("Provided ROP path invalid or does not exist. If using relative paths, remember that this ROPs funcionality is called from the child shell ROP scope.")
 
         return op
 
     def getPictureParm(self, node):
-        parm_names = ["ar_picture", "picture", "vm_picture",
-                      "ri_display_0", "copoutput", "HO_img_fileName", "output"]
+        parm_names = ["ar_picture",
+                      "picture",
+                      "vm_picture",
+                      "ri_display_0",
+                      "copoutput",
+                      "HO_img_fileName",
+                      "output"]
         for parm_name in parm_names:
             if node.parm(parm_name) is not None:
                 return node.parm(parm_name)

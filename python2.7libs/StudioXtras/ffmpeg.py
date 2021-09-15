@@ -1,6 +1,7 @@
 import hou
 import os
 import threading
+import time
 
 from StudioXtras import utils
 reload(utils)
@@ -26,6 +27,7 @@ def _createImageList(first_frame, last_frame, step, picture_parm, enable_denoise
             command = "iconvert -g auto %s %s" % (frame_file, jpg_frame_file)
             t = threading.Thread(target=utils.runCommand, args=(command,))
             threads.append(t)
+            time.sleep(0.1)  # to avoid clogging resource error
             t.start()
 
             files_to_delete.append(jpg_frame_file)
@@ -94,7 +96,11 @@ def run():
     files_to_delete.append(list_file)
     for del_file in files_to_delete:
         if os.path.exists(del_file):
-            os.remove(del_file)
+            try:
+                os.remove(del_file)
+                time.sleep(0.1)  # to avoid clogging resource error
+            except Exception as e:
+                helper.warning(str(e))
 
     if cmd_err != "" and "error" in cmd_err.lower():
         helper.error(cmd_err)
