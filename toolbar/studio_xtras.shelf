@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shelfDocument>
+  <!-- This file contains definitions of shelves, toolbars, and tools.
+ It should not be hand-edited when it is being used by the application.
+ Note, that two definitions of the same element are not allowed in
+ a single file. -->
+
+  <toolshelf name="studio_xtras" label="Studio Xtras">
+    <memberTool name="copy_render_region_to_rop"/>
+  </toolshelf>
+
+  <tool name="copy_render_region_to_rop" label="Copy Render Region to ROP" icon="ROP_arnold">
+    <script scriptType="python"><![CDATA[desktop = hou.ui.curDesktop()
+ipr = desktop.paneTabOfType(hou.paneTabType.IPRViewer)
+
+rop = ipr.ropNode()
+if rop.type().name() == "arnold":
+    xmin, xmax, ymin, ymax = ipr.cropRegion()
+    camera = hou.node(rop.parm("camera").eval())
+    if camera is not None:
+        xres = camera.parm("resx").eval()
+        yres = camera.parm("resy").eval()
+        
+        xmin = int(xmin * xres)
+        xmax = int(xmax * xres)
+        ymin = int(ymin * yres)
+        ymax = int(ymax * yres)
+        
+        rop.parm("ar_user_options_enable").set(True)
+        # Swap the ymax/ymin because the IPR viewer space is flipped
+        rop.parm("ar_user_options").set(
+            "region_min_x %s region_min_y %s region_max_x %s region_max_y %s" % 
+            (xmin, yres-ymax-1, xmax, yres-ymin-1))
+    ]]></script>
+  </tool>
+</shelfDocument>
