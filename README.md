@@ -12,34 +12,13 @@ The following dependencies are necessary for running all of the features of Stud
 
 Several Tools are designed to work with Arnold and Deadline since that's what we've been using.
 
-## Linux
-
-Clone or download the repository. 
-Install the python libraries to Houdini by doing the following
-
-Then edit your `/home/${USER}/houdini18.5/houdini.env` file with the following
-
+Add the following lines to your houdini.env file.
 ```
-STUDIO_XTRAS="/directory/of/repository/StudioXtras/otls"
-HOUDINI_OTLSCAN_PATH="${STUDIO_XTRAS};&"
+STUDIO_XTRAS="/directory/of/repository/StudioXtras/"
+HOUDINI_PATH="${STUDIO_XTRAS};${ARNOLD};${DEADLINE};${OCTANE};${REDSHIFT};&"
 ```
+[See Houdini documentation on environment variables](https://www.sidefx.com/docs/houdini/basics/config_env.html)
+1. Linux   `/home/${USER}/houdini18.5/houdini.env`
+2. MacOS   `/Users/${USER}/Library/Preferences/houdini/18.5/houdini.env`
+3. Windows `C:\Users\username\Documents\houdini18.5\houdini.env`
 
-## MacOS
-
-Clone or download the repository. 
-Install the python libraries to Houdini by doing the following
-
-Then edit your `/Users/${USER}/Library/Preferences/houdini/18.5/houdini.env` file with the following
-
-```
-STUDIO_XTRAS="/directory/of/repository/StudioXtras/otls"
-HOUDINI_OTLSCAN_PATH="${STUDIO_XTRAS};&"
-```
-
-## Windows
-Clone or download the repository. 
-Then edit your `C:\Users\username\Documents\houdini18.5\houdini.env` file with the following
-```
-STUDIO_XTRAS="/directory/of/repository/StudioXtras/otls"
-HOUDINI_OTLSCAN_PATH="${STUDIO_XTRAS};&"
-```

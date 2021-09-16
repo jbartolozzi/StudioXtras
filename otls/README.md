@@ -6,7 +6,7 @@ This ROP will take an input render ROP and automatically compile the output imag
 For most cases the advanced settings will not need to be used.
 This ROP's primary purpose is to provide playable movie files, not final quality video.
 
-FFmpeg must be installed and available in the PATH for this node to function correctly.
+FFmpeg must be installed and available in the PATH for this node to function correctly.\
 [FFmpeg](https://www.ffmpeg.org/)\
 [Installing FFmpeg on Windows](https://www.wikihow.com/Install-FFmpeg-on-Windows)\
 [Installing FFmpeg on MacOS using brew](http://jollejolles.com/install-ffmpeg-on-mac-os-x/)\
