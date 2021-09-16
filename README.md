@@ -10,6 +10,8 @@ StudioXtras is a collection of tools I've built for Houdini over the past few ye
 The following dependencies are necessary for running all of the features of StudioXtras
 [FFmpeg](https://www.ffmpeg.org/) [cURL](https://curl.se/download.html) [git](https://git-scm.com/download/win)
 
+Several Tools are designed to work with Arnold and Deadline since that's what we've been using.
+
 ## Linux
 
 Clone or download the repository. 
@@ -41,9 +43,3 @@ Then edit your `C:\Users\username\Documents\houdini18.5\houdini.env` file with t
 STUDIO_XTRAS="/directory/of/repository/StudioXtras/otls"
 HOUDINI_OTLSCAN_PATH="${STUDIO_XTRAS};&"
 ```
-
-# Nodes
-
-## FFmpeg
-## Slack
-## Gooey
