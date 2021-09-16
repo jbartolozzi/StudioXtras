@@ -2,6 +2,8 @@
 
 ## FFmpeg
 
+![alt text](https://github.com/jbartolozzi/StudioXtras/blob/main/img/ffmpeg.jpg?raw=true)
+
 This ROP will take an input render ROP and automatically compile the output images into an mp4.
 For most cases the advanced settings will not need to be used.
 This ROP's primary purpose is to provide playable movie files, not final quality video.
@@ -14,6 +16,8 @@ FFmpeg must be installed and available in the PATH for this node to function cor
 
 
 ## Slack
+
+![alt text](https://github.com/jbartolozzi/StudioXtras/blob/main/img/slack.jpg?raw=true)
 
 This ROP will send a message when run. It can upload images and videos from a target ROP as well.
 We primarily use it alongside FFmpeg to review animations on Slack.
@@ -34,11 +38,19 @@ The Slack ROP relies on [cURL](https://curl.se/download.html)
 
 ## Renderbot
 
+![alt text](https://github.com/jbartolozzi/StudioXtras/blob/main/img/renderbot1.jpg?raw=true)
+
 Renderbot is a compiled render preset tool we use across different types of files.
 The main functions are submitting the following jobs via Deadline
 1. Run a sim job from a selected ROP
 2. Run an OpenGL playblast, compile it with FFmpeg, and send it to Slack
 3. Run an Arnold job, compile it with FFmpeg, and send it to Slack
+
+This operator demonstrates the "Ignore Dependancy" capability of both the Slack and FFmpeg ROPs
+Even though the Deadline ROP is being fed into FFmpeg in this utility, the FFmpeg ROP is set to 
+use Arnold as the output driver. This way the Deadline job will be an upstream task dependancy, 
+but the FFmpeg node will know to use the Arnold ROP to determine which images to process.
+![alt text](https://github.com/jbartolozzi/StudioXtras/blob/main/img/renderbot2.jpg?raw=true)
 
 # Crowds
 

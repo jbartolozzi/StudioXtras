@@ -2,7 +2,7 @@
 
 StudioXtras is a collection of tools I've built for Houdini over the past few years. They fill certain holes in the Houdini workflow and also serve as examples of how to built tools in Houdini.
 
-[Docs for node operators](https://github.com/jbartolozzi/StudioXtras/tree/main/otls)
+[Docs for node operators](https://github.com/jbartolozzi/StudioXtras/tree/main/otls)\
 [Docs for shelf tools](https://github.com/jbartolozzi/StudioXtras/tree/main/toolbar)
 
 
