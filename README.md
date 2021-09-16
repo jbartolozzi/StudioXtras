@@ -12,9 +12,9 @@ StudioXtras is a collection of tools I've built for Houdini over the past few ye
 # Installation
 
 The following dependencies are necessary for running all of the features of StudioXtras
-[FFmpeg](https://www.ffmpeg.org/) [cURL](https://curl.se/download.html) [git](https://git-scm.com/download/win)
+[FFmpeg](https://www.ffmpeg.org/) [cURL](https://curl.se/download.html)
 
-Several Tools are designed to work with Arnold and Deadline since that's what we've been using.
+Several Tools are designed to work with [Arnold](https://www.arnoldrenderer.com/) and [Deadline](https://www.awsthinkbox.com/deadline) since that's what we've been using.
 
 Add the following lines to your houdini.env file. 
 ```
