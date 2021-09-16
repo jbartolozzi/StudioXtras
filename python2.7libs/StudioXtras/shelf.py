@@ -38,16 +38,21 @@ def copyRenderRegionToArnold():
 
 
 def exportToPy():
-    json_file = hou.ui.selectFile(start_directory=hou.expandString("$HIP"),
-                                  title="Export Selection to Python",
-                                  collapse_sequences=False,
-                                  file_type=hou.fileType.Any,
-                                  pattern="*.py",
-                                  default_value=None,
-                                  multiple_select=False,
-                                  image_chooser=None,
-                                  chooser_mode=hou.fileChooserMode.Write,
-                                  width=0, height=0)
+    python_file = hou.ui.selectFile(start_directory=hou.expandString("$HIP"),
+                                    title="Export Selection to Python",
+                                    collapse_sequences=False,
+                                    file_type=hou.fileType.Any,
+                                    pattern="*.py",
+                                    default_value=None,
+                                    multiple_select=False,
+                                    image_chooser=None,
+                                    chooser_mode=hou.fileChooserMode.Write,
+                                    width=0, height=0)
+    if python_file is None:
+        return
+    if not python_file.endswith(".py"):
+        python_file = python_file + ".py"
+
     outputs = []
     for node in hou.selectedNodes():
         outputs.append(node.asCode(brief=False,
@@ -60,12 +65,32 @@ def exportToPy():
                                    save_spare_parms=True,
                                    function_name=None))
 
-    with open(hou.expandString(json_file), 'w') as outfile:
+    with open(hou.expandString(python_file).replace(".py", "_raw.py"), 'w') as outfile:
         for output in outputs:
-            processed_lines = []
-            lines = output.split("\n")
-            for line in lines:
-                if not line.startswith(" ") and \
+            outfile.write(output)
+
+    with open(hou.expandString(python_file), 'w') as outfile:
+        processed_lines = []
+        for output in outputs:
+            lines = iter(output.split("\n"))
+            line = next(lines, None)
+            while line is not None:
+                if line.startswith("if"):
+                    block = []
+                    block.append(line)
+                    line = next(lines, None)
+                    while line.startswith(" "):
+                        block.append(line)
+                        line = next(lines, None)
+
+
+                    processed_lines.append("try:")
+                    for block_line in block:
+                        processed_lines.append("    " + block_line)
+                    processed_lines.append("except Exception as e:")
+                    processed_lines.append("    print(str(e))")
+
+                elif not line.startswith(" ") and \
                         not line.startswith("#") and \
                         line.strip() != "" and \
                         not line.startswith("if"):
@@ -73,25 +98,31 @@ def exportToPy():
                     processed_lines.append("    " + line.strip())
                     processed_lines.append("except Exception as e:")
                     processed_lines.append("    print(str(e))")
+                    line = next(lines, None)
                 else:
                     if line.startswith("hou"):
                         raise
                     processed_lines.append(line)
+                    line = next(lines, None)
 
         outfile.write("\n".join(processed_lines))
 
+    
+
 
 def importFromPy():
-    json_file = hou.ui.selectFile(start_directory=hou.expandString("$HIP"),
-                                  title="Export Selection to JSON",
-                                  collapse_sequences=False,
-                                  file_type=hou.fileType.Any,
-                                  pattern="*.py",
-                                  default_value=None,
-                                  multiple_select=False,
-                                  image_chooser=None,
-                                  chooser_mode=hou.fileChooserMode.Write,
-                                  width=0, height=0)
+    import os
+    python_file = hou.ui.selectFile(start_directory=hou.expandString("$HIP"),
+                                    title="Export Selection to JSON",
+                                    collapse_sequences=False,
+                                    file_type=hou.fileType.Any,
+                                    pattern="*.py",
+                                    default_value=None,
+                                    multiple_select=False,
+                                    image_chooser=None,
+                                    chooser_mode=hou.fileChooserMode.Write,
+                                    width=0, height=0)
 
-    with open(hou.expandString(json_file)) as infile:
-        exec(infile.read())
+    if python_file is not None and os.path.exists(python_file):
+        with open(hou.expandString(python_file)) as infile:
+            exec(infile.read())
