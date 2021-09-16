@@ -10,27 +10,16 @@
   </toolshelf>
 
   <tool name="copy_render_region_to_rop" label="Copy Render Region to ROP" icon="ROP_arnold">
-    <script scriptType="python"><![CDATA[desktop = hou.ui.curDesktop()
-ipr = desktop.paneTabOfType(hou.paneTabType.IPRViewer)
-
-rop = ipr.ropNode()
-if rop.type().name() == "arnold":
-    xmin, xmax, ymin, ymax = ipr.cropRegion()
-    camera = hou.node(rop.parm("camera").eval())
-    if camera is not None:
-        xres = camera.parm("resx").eval()
-        yres = camera.parm("resy").eval()
-        
-        xmin = int(xmin * xres)
-        xmax = int(xmax * xres)
-        ymin = int(ymin * yres)
-        ymax = int(ymax * yres)
-        
-        rop.parm("ar_user_options_enable").set(True)
-        # Swap the ymax/ymin because the IPR viewer space is flipped
-        rop.parm("ar_user_options").set(
-            "region_min_x %s region_min_y %s region_max_x %s region_max_y %s" % 
-            (xmin, yres-ymax-1, xmax, yres-ymin-1))
-    ]]></script>
+    <helpText><![CDATA[This shelf tool will copy the crop region from the current Render View pane to the Render View's Arnold Rop User Options parameter. 
+If no region is selected, it will  clear the options out.]]></helpText>
+    <script scriptType="python"><![CDATA[import os, sys
+tool_path = hou.shelves.tools()[kwargs['toolname']].filePath()
+path = os.path.join(os.path.dirname(tool_path),"../python2.7libs/")
+if not os.path.exists(path):
+    raise hou.NodeError("Unable to load StudioXtras libraries from %s" % path)
+sys.path.insert(0,path)
+from StudioXtras import shelf
+reload(shelf)
+shelf.copyRenderRegionToArnold()]]></script>
   </tool>
 </shelfDocument>
