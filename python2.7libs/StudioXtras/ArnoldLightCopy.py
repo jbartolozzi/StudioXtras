@@ -34,7 +34,7 @@ def _set_light_params(attr_map, transform_node, light_node, point_number, geomet
             else:
                 parm_tuple = light_node.parmTuple(attr_map[attr])
             if parm_tuple is not None:
-                size = found_attr.size()
+                # size = found_attr.size()
                 values = point.attribValue(attr)
                 # Handle the array type
                 if isinstance(values, tuple):
