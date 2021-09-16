@@ -48,23 +48,37 @@ def exportToPy():
                                   image_chooser=None,
                                   chooser_mode=hou.fileChooserMode.Write,
                                   width=0, height=0)
-    output = []
+    outputs = []
     for node in hou.selectedNodes():
-        output.append(node.asCode(brief=False,
-                                  recurse=True,
-                                  save_channels_only=False,
-                                  save_creation_commands=True,
-                                  save_keys_in_frames=True,
-                                  save_outgoing_wires=True,
-                                  save_parm_values_only=False,
-                                  save_spare_parms=True,
-                                  function_name=None))
+        outputs.append(node.asCode(brief=False,
+                                   recurse=True,
+                                   save_channels_only=False,
+                                   save_creation_commands=True,
+                                   save_keys_in_frames=True,
+                                   save_outgoing_wires=True,
+                                   save_parm_values_only=False,
+                                   save_spare_parms=True,
+                                   function_name=None))
 
     with open(hou.expandString(json_file), 'w') as outfile:
-        # json.dump(output, outfile)
-        for steps in output:
-            outfile.write(steps)
-            outfile.write("\n")
+        for output in outputs:
+            processed_lines = []
+            lines = output.split("\n")
+            for line in lines:
+                if not line.startswith(" ") and \
+                        not line.startswith("#") and \
+                        line.strip() != "" and \
+                        not line.startswith("if"):
+                    processed_lines.append("try:")
+                    processed_lines.append("    " + line.strip())
+                    processed_lines.append("except Exception as e:")
+                    processed_lines.append("    print(str(e))")
+                else:
+                    if line.startswith("hou"):
+                        raise
+                    processed_lines.append(line)
+
+        outfile.write("\n".join(processed_lines))
 
 
 def importFromPy():
