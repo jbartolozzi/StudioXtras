@@ -7,6 +7,8 @@
 
   <toolshelf name="studio_xtras" label="Studio Xtras">
     <memberTool name="copy_render_region_to_rop"/>
+    <memberTool name="export_to_python"/>
+    <memberTool name="import_from_python"/>
   </toolshelf>
 
   <tool name="copy_render_region_to_rop" label="Copy Render Region to ROP" icon="ROP_arnold">
@@ -22,5 +24,17 @@ sys.path.insert(0,path)
 from StudioXtras import shelf
 reload(shelf)
 shelf.copyRenderRegionToArnold()]]></script>
+  </tool>
+
+  <tool name="export_to_python" label="Export to Python" icon="TOP_jsoninput">
+    <script scriptType="python"><![CDATA[import os, sys
+tool_path = hou.shelves.tools()[kwargs['toolname']].filePath()
+path = os.path.join(os.path.dirname(tool_path),"../python2.7libs/")
+if not os.path.exists(path):
+    raise hou.NodeError("Unable to load StudioXtras libraries from %s" % path)
+sys.path.insert(0,path)
+from StudioXtras import shelf
+reload(shelf)
+shelf.exportToPy()]]></script>
   </tool>
 </shelfDocument>

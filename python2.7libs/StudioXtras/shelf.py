@@ -35,3 +35,49 @@ def copyRenderRegionToArnold():
 
     else:
         hou.ui.displayMessage("Select an Arnold ROP in the IPR Viewer")
+
+
+def exportToPy():
+    json_file = hou.ui.selectFile(start_directory=hou.expandString("$HIP"),
+                                  title="Export Selection to Python",
+                                  collapse_sequences=False,
+                                  file_type=hou.fileType.Any,
+                                  pattern="*.py",
+                                  default_value=None,
+                                  multiple_select=False,
+                                  image_chooser=None,
+                                  chooser_mode=hou.fileChooserMode.Write,
+                                  width=0, height=0)
+    output = []
+    for node in hou.selectedNodes():
+        output.append(node.asCode(brief=False,
+                                  recurse=True,
+                                  save_channels_only=False,
+                                  save_creation_commands=True,
+                                  save_keys_in_frames=True,
+                                  save_outgoing_wires=True,
+                                  save_parm_values_only=False,
+                                  save_spare_parms=True,
+                                  function_name=None))
+
+    with open(hou.expandString(json_file), 'w') as outfile:
+        # json.dump(output, outfile)
+        for steps in output:
+            outfile.write(steps)
+            outfile.write("\n")
+
+
+def importFromPy():
+    json_file = hou.ui.selectFile(start_directory=hou.expandString("$HIP"),
+                                  title="Export Selection to JSON",
+                                  collapse_sequences=False,
+                                  file_type=hou.fileType.Any,
+                                  pattern="*.py",
+                                  default_value=None,
+                                  multiple_select=False,
+                                  image_chooser=None,
+                                  chooser_mode=hou.fileChooserMode.Write,
+                                  width=0, height=0)
+
+    with open(hou.expandString(json_file)) as infile:
+        exec(infile.read())
