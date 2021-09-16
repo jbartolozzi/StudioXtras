@@ -65,10 +65,6 @@ def exportToPy():
                                    save_spare_parms=True,
                                    function_name=None))
 
-    with open(hou.expandString(python_file).replace(".py", "_raw.py"), 'w') as outfile:
-        for output in outputs:
-            outfile.write(output)
-
     with open(hou.expandString(python_file), 'w') as outfile:
         processed_lines = []
         for output in outputs:
@@ -82,7 +78,6 @@ def exportToPy():
                     while line.startswith(" "):
                         block.append(line)
                         line = next(lines, None)
-
 
                     processed_lines.append("try:")
                     for block_line in block:
@@ -106,8 +101,6 @@ def exportToPy():
                     line = next(lines, None)
 
         outfile.write("\n".join(processed_lines))
-
-    
 
 
 def importFromPy():
