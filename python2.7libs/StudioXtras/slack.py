@@ -27,7 +27,7 @@ def _slackMedia(curl, api_key, channel, text, file, helper):
 
 def run():
     utils.makeTimestampEnv()
-    node = hou.node("..")
+    node = hou.pwd()  # hou.node("..")
     helper = utils.RopHelper(node.name())
 
     # Get node params
@@ -41,6 +41,8 @@ def run():
     if send_media:
         # Get the target ROP for source images
         op = helper.getTargetOutputNode(node)
+        if op is None:
+            return
         file = helper.getPictureParm(op).eval().replace(" ", "\\ ")
         _slackMedia(curl_executable, api_key, channel, message, file, helper)
     else:

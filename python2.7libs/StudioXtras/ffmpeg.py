@@ -49,14 +49,15 @@ def _writeFfmpegList(output_file, output_list):
 def run():
     # Boiler plate setup
     utils.makeTimestampEnv()
-    node = hou.node("..")
+    node = hou.pwd()  # hou.node("..")
     helper = utils.RopHelper(node.name())
-
     # Find ffmpeg executable
     ffmpeg_executable = helper.executablePath("ffmpeg")
 
     # Get the target ROP for source images
     op = helper.getTargetOutputNode(node)
+    if op is None:
+        return
 
     # Create the list of images to pass to FFMPEG
     f1 = helper.getParm(op, "f1")

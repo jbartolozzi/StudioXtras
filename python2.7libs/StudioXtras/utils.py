@@ -12,12 +12,12 @@ class NodeHelper:
         err_text = "StudioXtras Error: %s\n    %s" % (self.node_name, str(text))
         sys.stderr.write(err_text + "\n")
         if "ui" in dir(hou):
-            raise hou.NodeError(err_text)
+            hou.ui.displayMessage(text, severity=hou.severityType.Error)
 
     def warning(self, text):
         print("StudioXtras Warning: %s\n    %s" % (self.node_name, text))
-        # if "ui" in dir(hou):
-        #     raise hou.NodeWarning(text)
+        if "ui" in dir(hou):
+            hou.ui.displayMessage(text, severity=hou.severityType.Warning)
 
     def log(self, text):
         print("StudioXtras: %s\n    %s" % (self.node_name, text))
@@ -57,8 +57,9 @@ class RopHelper(NodeHelper):
 
         if op is None and using_input_op:
             self.error("No output driver specified. Please connect input or select ROP from parameter.")
-        elif op is None and not using_input_op and output_driver_parm_text.strip() != "":
-            self.error("Provided ROP path invalid or does not exist. If using relative paths, remember that this ROPs funcionality is called from the child shell ROP scope.")
+        elif op is None and not using_input_op:
+            self.error(
+                "Provided ROP path invalid or does not exist. Please set output driver or connect input.")
 
         return op
 
