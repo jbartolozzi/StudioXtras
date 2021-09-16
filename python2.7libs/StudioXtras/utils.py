@@ -8,16 +8,16 @@ class NodeHelper:
     def __init__(self, node_name):
         self.node_name = node_name
 
-    def error(self, text):
+    def error(self, text, details=""):
         err_text = "StudioXtras Error: %s\n    %s" % (self.node_name, str(text))
         sys.stderr.write(err_text + "\n")
         if "ui" in dir(hou):
-            hou.ui.displayMessage(text, severity=hou.severityType.Error)
+            hou.ui.displayMessage(text, title="StudioXtras Error", details=details, severity=hou.severityType.Error)
 
-    def warning(self, text):
+    def warning(self, text, details=""):
         print("StudioXtras Warning: %s\n    %s" % (self.node_name, text))
         if "ui" in dir(hou):
-            hou.ui.displayMessage(text, severity=hou.severityType.Warning)
+            hou.ui.displayMessage(text, title="StudioXtras Warning", details=details, severity=hou.severityType.Warning)
 
     def log(self, text):
         print("StudioXtras: %s\n    %s" % (self.node_name, text))

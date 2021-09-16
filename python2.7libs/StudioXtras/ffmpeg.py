@@ -53,7 +53,6 @@ def run():
     helper = utils.RopHelper(node.name())
     # Find ffmpeg executable
     ffmpeg_executable = helper.executablePath("ffmpeg")
-
     # Get the target ROP for source images
     op = helper.getTargetOutputNode(node)
     if op is None:
@@ -101,7 +100,7 @@ def run():
                 os.remove(del_file)
                 time.sleep(0.1)  # to avoid clogging resource error
             except Exception as e:
-                helper.warning(str(e))
+                helper.warning("Unable to delete auto converted file.", details=str(e))
 
     if cmd_err != "" and "error" in cmd_err.lower():
-        helper.error(cmd_err)
+        helper.error("Unable to run FFmpeg", details=cmd_err)
