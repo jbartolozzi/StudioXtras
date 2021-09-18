@@ -37,4 +37,16 @@ from StudioXtras import shelf
 reload(shelf)
 shelf.exportToPy()]]></script>
   </tool>
+
+  <tool name="import_from_python" label="Import from Python" icon="TOP_jsonoutput">
+    <script scriptType="python"><![CDATA[import os, sys
+tool_path = hou.shelves.tools()[kwargs['toolname']].filePath()
+path = os.path.join(os.path.dirname(tool_path),"../python2.7libs/")
+if not os.path.exists(path):
+    raise hou.NodeError("Unable to load StudioXtras libraries from %s" % path)
+sys.path.insert(0,path)
+from StudioXtras import shelf
+reload(shelf)
+shelf.importFromPy()]]></script>
+  </tool>
 </shelfDocument>
