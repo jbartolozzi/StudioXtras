@@ -1,4 +1,5 @@
 import hou
+import os
 import sys
 import subprocess
 from distutils.spawn import find_executable
@@ -12,12 +13,14 @@ class NodeHelper:
         err_text = "StudioXtras Error: %s\n    %s" % (self.node_name, str(text))
         sys.stderr.write(err_text + "\n")
         if "ui" in dir(hou):
-            hou.ui.displayMessage(text, title="StudioXtras Error", details=details, severity=hou.severityType.Error)
+            hou.ui.displayMessage(text, title="StudioXtras Error",
+                                  details=details, severity=hou.severityType.Error)
 
     def warning(self, text, details=""):
         print("StudioXtras Warning: %s\n    %s" % (self.node_name, text))
         if "ui" in dir(hou):
-            hou.ui.displayMessage(text, title="StudioXtras Warning", details=details, severity=hou.severityType.Warning)
+            hou.ui.displayMessage(text, title="StudioXtras Warning",
+                                  details=details, severity=hou.severityType.Warning)
 
     def log(self, text):
         print("StudioXtras: %s\n    %s" % (self.node_name, text))
@@ -78,18 +81,33 @@ class RopHelper(NodeHelper):
         self.error("Unable to find picture or vm_picture parm from render target.")
         return None
 
+    def getImageList(self, first_frame, last_frame, step, picture_parm, check_if_exists=False):
+        output = list(picture_parm.evalAtFrame(frame)
+                      for frame in range(int(first_frame), int(last_frame + 1), int(step)))
+        if check_if_exists:
+            return list(file for file in output if os.path.exists(file))
+        else:
+            return output
 
-def runCommand(command, disable_env=False):
-    if disable_env:
-        process = subprocess.Popen(command, env={}, shell=True,
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+def runCommand(command, disable_env=False, background=False):
+    if background:
+        if disable_env:
+            process = subprocess.Popen(command, env={}, shell=True,
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        else:
+            process = subprocess.Popen(
+                command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     else:
-        process = subprocess.Popen(
-            command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if disable_env:
+            process = subprocess.Popen(command, env={}, shell=True,
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        else:
+            process = subprocess.Popen(
+                command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    cmd_output, cmd_err = process.communicate()
-
-    return (cmd_output, cmd_err)
+        cmd_output, cmd_err = process.communicate()
+        return (cmd_output, cmd_err)
 
 
 def makeTimestampEnv():

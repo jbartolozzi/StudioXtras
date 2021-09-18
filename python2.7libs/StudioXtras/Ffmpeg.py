@@ -3,8 +3,8 @@ import os
 import threading
 import time
 
-from StudioXtras import utils
-reload(utils)
+from StudioXtras import Utils
+reload(Utils)
 
 
 def _createImageList(first_frame, last_frame, step, picture_parm, enable_denoise_postfix, denoise_postfix):
@@ -25,7 +25,7 @@ def _createImageList(first_frame, last_frame, step, picture_parm, enable_denoise
             jpg_frame_file = frame_file.replace(getExt(frame_file), ".jpg")
 
             command = "iconvert -g auto %s %s" % (frame_file, jpg_frame_file)
-            t = threading.Thread(target=utils.runCommand, args=(command,))
+            t = threading.Thread(target=Utils.runCommand, args=(command,))
             threads.append(t)
             time.sleep(0.1)  # to avoid clogging resource error
             t.start()
@@ -48,9 +48,9 @@ def _writeFfmpegList(output_file, output_list):
 
 def run():
     # Boiler plate setup
-    utils.makeTimestampEnv()
+    Utils.makeTimestampEnv()
     node = hou.pwd()  # hou.node("..")
-    helper = utils.RopHelper(node.name())
+    helper = Utils.RopHelper(node.name())
     # Find ffmpeg executable
     ffmpeg_executable = helper.executablePath("ffmpeg")
     # Get the target ROP for source images
@@ -91,7 +91,7 @@ def run():
     command = "\"%s\" -y -r %s -f concat -i \"%s\" -r %s %s \"%s\"" % (ffmpeg_executable, fps,
                                                                        list_file, fps, node.parm("advanced_parameters").evalAsString(), output_file)
 
-    cmd_output, cmd_err = utils.runCommand(command)
+    cmd_output, cmd_err = Utils.runCommand(command)
 
     files_to_delete.append(list_file)
     for del_file in files_to_delete:

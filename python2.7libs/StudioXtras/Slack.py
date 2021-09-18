@@ -1,8 +1,8 @@
 import hou
 import json
 
-from StudioXtras import utils
-reload(utils)
+from StudioXtras import Utils
+reload(Utils)
 
 
 def _processPost(cmd_output, cmd_err, helper):
@@ -14,21 +14,21 @@ def _processPost(cmd_output, cmd_err, helper):
 def _slackText(curl, api_key, channel, text, helper):
     command = "\"%s\" -F \"text=%s\" -F \"channel=%s\" -H \"Authorization:Bearer %s\" \"https://slack.com/api/chat.postMessage\"" % (
         curl, text, channel, api_key)
-    (cmd_output, cmd_err) = utils.runCommand(command)
+    (cmd_output, cmd_err) = Utils.runCommand(command)
     _processPost(cmd_output, cmd_err, helper)
 
 
 def _slackMedia(curl, api_key, channel, text, file, helper):
     command = "\"%s\" -F \"file=@%s\" -F \"initial_comment=%s\" -F \"channels=%s\" -H \"Authorization: Bearer %s\" \"https://slack.com/api/files.upload\"" % (
         curl, file, text, channel, api_key)
-    (cmd_output, cmd_err) = utils.runCommand(command)
+    (cmd_output, cmd_err) = Utils.runCommand(command)
     _processPost(cmd_output, cmd_err, helper)
 
 
 def run():
-    utils.makeTimestampEnv()
+    Utils.makeTimestampEnv()
     node = hou.pwd()  # hou.node("..")
-    helper = utils.RopHelper(node.name())
+    helper = Utils.RopHelper(node.name())
 
     # Get node params
     api_key = helper.getParm(node, "api_token")
