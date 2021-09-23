@@ -102,5 +102,6 @@ def run():
             except Exception as e:
                 helper.warning("Unable to delete auto converted file.", details=str(e))
 
-    if cmd_err != "" and "error" in cmd_err.lower():
+    to_check = ['error', 'unable']
+    if cmd_err != "" and any(list((match in cmd_err.lower() for match in to_check))):
         helper.error("Unable to run FFmpeg", details=cmd_err)
