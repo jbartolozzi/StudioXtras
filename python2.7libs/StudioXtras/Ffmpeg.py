@@ -66,6 +66,9 @@ def run():
     fps = max(fps / f3, 1)
 
     picture_parm = helper.getPictureParm(op)
+    dirname = os.path.dirname(picture_parm.eval())
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
 
     # Create image list
     list_file = os.path.join(os.path.dirname(picture_parm.eval()), "ffmpeg_list.txt")
