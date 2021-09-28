@@ -68,6 +68,7 @@ def run():
     picture_parm = helper.getPictureParm(op)
     dirname = os.path.dirname(picture_parm.eval())
     if not os.path.exists(dirname):
+        helper.log("Making directory %s." % dirname)
         os.makedirs(dirname)
 
     # Create image list
