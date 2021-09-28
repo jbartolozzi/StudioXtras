@@ -7,9 +7,9 @@
 
   <toolshelf name="studio_xtras" label="Studio Xtras">
     <memberTool name="copy_render_region_to_rop"/>
+    <memberTool name="check_paths"/>
     <memberTool name="export_to_python"/>
     <memberTool name="import_from_python"/>
-    <memberTool name="check_paths"/>
   </toolshelf>
 
   <tool name="copy_render_region_to_rop" label="Copy Render Region to ROP" icon="ROP_arnold">
