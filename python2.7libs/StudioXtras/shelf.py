@@ -119,3 +119,41 @@ def importFromPy():
     if python_file is not None and os.path.exists(python_file):
         with open(hou.expandString(python_file)) as infile:
             exec(infile.read())
+
+
+def checkFilePaths():
+    import json
+    import os
+    pathmap_file_path = hou.text.expandString("${PATH_MAP_DICT}")
+    if not os.path.exists(pathmap_file_path):
+        hou.ui.displayMessage("Pathmap file not found.",
+                              title="StudioXtras Error",
+                              details="In your houdini.env file specify PATH_MAP_DICT to point to a json file.",
+                              severity=hou.severityType.Error)
+
+        return
+
+    correction_dict = {}
+    with open(pathmap_file_path, 'r') as infile:
+        correction_dict = json.load(infile)
+
+    root_node = hou.node("/")
+    failed = []
+    for parm in root_node.allParms():
+        parm_template = parm.parmTemplate()
+        if parm_template.type() == hou.parmTemplateType.String and \
+                parm_template.stringType() == hou.stringParmType.FileReference:
+
+            try:
+                unexpanded = parm.unexpandedString()
+                for correction in correction_dict.keys():
+                    if correction in unexpanded:
+                        parm.set(unexpanded.replace(correction, correction_dict[correction]))
+            except:
+                failed.append("%s : %s" % (parm.node().path(), parm.name()))
+
+    if "ui" in dir(hou):
+        hou.ui.displayMessage("Following parameters could not be processed",
+                              title="StudioXtras Error",
+                              details="\n".join(failed),
+                              severity=hou.severityType.Warning)
