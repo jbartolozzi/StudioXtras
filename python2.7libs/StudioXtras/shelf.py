@@ -152,8 +152,8 @@ def checkFilePaths():
             except:
                 failed.append("%s : %s" % (parm.node().path(), parm.name()))
 
-    if "ui" in dir(hou):
-        hou.ui.displayMessage("Following parameters could not be processed",
-                              title="StudioXtras Error",
-                              details="\n".join(failed),
-                              severity=hou.severityType.Warning)
+    # if "ui" in dir(hou):
+    #     hou.ui.displayMessage("Following parameters could not be processed",
+    #                           title="StudioXtras Error",
+    #                           details="\n".join(failed),
+    #                           severity=hou.severityType.Warning)
