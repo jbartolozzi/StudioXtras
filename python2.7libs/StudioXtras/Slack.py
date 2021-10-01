@@ -6,9 +6,12 @@ reload(Utils)
 
 
 def _processPost(cmd_output, cmd_err, helper):
-    out_dict = json.loads(cmd_output)
-    if "ok" in out_dict and not out_dict["ok"]:
-        helper.error("Error running Slack API", details=out_dict["error"])
+    try:
+        out_dict = json.loads(cmd_output)
+        if "ok" in out_dict and not out_dict["ok"]:
+            helper.error("Error running Slack API", details=out_dict["error"])
+    except:
+        helper.error("Error running Slack API", details="%s\n%s" % (str(cmd_output), str(cmd_err)))
 
 
 def _slackText(curl, api_key, channel, text, helper):
