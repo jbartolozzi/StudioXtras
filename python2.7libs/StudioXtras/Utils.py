@@ -6,8 +6,9 @@ from distutils.spawn import find_executable
 
 
 class NodeHelper:
-    def __init__(self, node_name):
+    def __init__(self, node_name, debug=False):
         self.node_name = node_name
+        self.debug_mode = debug
 
     def error(self, text, details=""):
         err_text = "StudioXtras Error: %s\n    %s" % (self.node_name, str(text))
@@ -15,12 +16,20 @@ class NodeHelper:
         if "ui" in dir(hou):
             hou.ui.displayMessage(text, title="StudioXtras Error",
                                   details=details, severity=hou.severityType.Error)
+        else:
+            raise hou.NodeError(text + " " + details)
 
     def warning(self, text, details=""):
         print("StudioXtras Warning: %s\n    %s" % (self.node_name, text))
         if "ui" in dir(hou):
             hou.ui.displayMessage(text, title="StudioXtras Warning",
                                   details=details, severity=hou.severityType.Warning)
+        else:
+            raise hou.NodeWarning(text + " " + details)
+
+    def debug(self, text):
+        if self.debug_mode:
+            print("%s Debug: %s" % (self.node_name, text))
 
     def log(self, text):
         print("StudioXtras: %s\n    %s" % (self.node_name, text))
@@ -32,11 +41,15 @@ class NodeHelper:
             self.error("Unable to get parm %s for node %s." % (parm_name, node.name()))
             return None
 
-    def executablePath(self, executable_name):
-        executable_path = find_executable(executable_name)
-        if executable_path is None:
-            self.error("%s is not installed. Please install %s and update your PATH environment variable." % (
-                executable_name, executable_name))
+    def executablePath(self, executable_name, env=None):
+        if env is not None and env in os.environ:
+            executable_path = os.environ[env]
+        else:
+            executable_path = find_executable(executable_name)
+
+        if not os.path.exists(executable_path):
+            self.error("%s is not installed." % executable_name,
+                       details="Please install %s and update your PATH environment variable. Refer to documentation for setting app specfic path variables." % executable_name)
         return executable_path
 
 

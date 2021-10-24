@@ -50,9 +50,13 @@ def run():
     # Boiler plate setup
     Utils.makeTimestampEnv()
     node = hou.pwd()  # hou.node("..")
-    helper = Utils.RopHelper(node.name())
-    # Find ffmpeg executable
-    ffmpeg_executable = helper.executablePath("ffmpeg")
+
+    helper = Utils.RopHelper(node.name(), debug=node.parm("debug").eval())
+    helper.debug("Running in debug mode.")
+
+    ffmpeg_executable = helper.executablePath("ffmpeg", env="STUDIO_XTRAS_FFMPEG")
+    helper.debug("ffmpeg_executable: %s" % ffmpeg_executable)
+
     # Get the target ROP for source images
     op = helper.getTargetOutputNode(node)
     if op is None:
@@ -65,6 +69,11 @@ def run():
     fps = helper.getParm(node, "fps")
     fps = max(fps / f3, 1)
 
+    helper.debug("f1: %s" % f1)
+    helper.debug("f2: %s" % f2)
+    helper.debug("f3: %s" % f3)
+    helper.debug("fps: %s" % fps)
+
     picture_parm = helper.getPictureParm(op)
     dirname = os.path.dirname(picture_parm.eval())
     if not os.path.exists(dirname):
@@ -73,6 +82,7 @@ def run():
 
     # Create image list
     list_file = os.path.join(os.path.dirname(picture_parm.eval()), "ffmpeg_list.txt")
+    helper.debug("list_file: %s" % list_file)
 
     # Write image list to render directory
     enable_denoise_postfix = helper.getParm(node, "enable_denoise_postfix")
@@ -96,6 +106,8 @@ def run():
                                                                        list_file, fps, node.parm("advanced_parameters").evalAsString(), output_file)
 
     cmd_output, cmd_err = Utils.runCommand(command)
+    helper.debug(command)
+    helper.debug("%s\n%s" % (cmd_output, cmd_err))
 
     files_to_delete.append(list_file)
     for del_file in files_to_delete:
