@@ -123,13 +123,6 @@ def runCommand(command, disable_env=False, background=False):
         return (cmd_output, cmd_err)
 
 
-def getAppLoad():
-    import psutil
-    app_mem = psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2
-    percent = psutil.virtual_memory().percent
-    return app_mem, percent
-
-
 def makeTimestampEnv():
     hou.putenv("TIMESTAMP", hou.expandString(
         "$_HIP_SAVETIME").strip().replace(" ", "_").replace(":", "_"))
