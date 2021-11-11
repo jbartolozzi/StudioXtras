@@ -889,4 +889,5 @@ try:
         print("Finished Rendering")
 except Exception as e:
     print("Error: Caught exception: " + str(e))
+    traceback.print_exc()
     raise
