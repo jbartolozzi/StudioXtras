@@ -1,5 +1,6 @@
 import hou
 import os
+import traceback
 import subprocess
 from distutils.spawn import find_executable
 
@@ -11,7 +12,7 @@ class NodeHelper:
 
     def error(self, text, details=""):
         err_text = "StudioXtras Error: %s\n    %s" % (self.node_name, str(text))
-        print(err_text)
+        print(err_text + "\n" + traceback.format_exc())
         if "ui" in dir(hou):
             hou.ui.displayMessage(text, title="StudioXtras Error",
                                   details=details, severity=hou.severityType.Error)
