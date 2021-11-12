@@ -1,5 +1,6 @@
 import hou
 import json
+import os
 
 from StudioXtras import Utils
 reload(Utils)
@@ -10,26 +11,40 @@ def _processPost(cmd_output, cmd_err, helper):
     helper.debug("cmd_err: %s" % cmd_err)
     try:
         out_dict = json.loads(cmd_output)
-        import sys
-        sys.stdout.write(out_dict)
-    #     if "ok" in out_dict and not out_dict["ok"]:
-    #         helper.error("Error running Slack API", details=out_dict["error"])
-    # except:
-    #     helper.error("Error running Slack API", details="%s\n%s" % (str(cmd_output), str(cmd_err)))
+        if "ok" in out_dict and not out_dict["ok"]:
+            helper.error("Error running Slack API", details=out_dict["error"])
     except:
-        pass
+        helper.error("Error running Slack API", details="%s\n%s" % (str(cmd_output), str(cmd_err)))
+
+
+def _checkForFakeTime(helper):
+    if "FAKETIME" in os.environ:
+        faketiem_so = None
+        for path in os.environ["LD_PRELOAD"]:
+            if "libfaketime" in path:
+                faketiem_so = path
+                break
+        if faketiem_so is not None:
+            return "LD_PRELOAD=%s FAKETIME='Now' FAKETIME_NO_CACHE=1" % faketiem_so
+        else:
+            helper.error("Faketime found in Environ but cant find path to so file.")
+    elif os.path.exists("/usr/local/bin/faketime"):
+        return "/usr/local/bin/faketime -f \"-0d\""
+    else:
+        return ""
+
 
 def _slackText(curl, api_key, channel, text, helper):
-    command = "\"%s\" -F \"text=%s\" -F \"channel=%s\" -H \"Authorization:Bearer %s\" \"https://slack.com/api/chat.postMessage\"" % (
-        curl, text, channel, api_key)
+    command = "%s \"%s\" -F \"text=%s\" -F \"channel=%s\" -H \"Authorization:Bearer %s\" \"https://slack.com/api/chat.postMessage\"" % (
+        _checkForFakeTime(helper), curl, text, channel, api_key)
     helper.debug("command: %s" % command)
     (cmd_output, cmd_err) = Utils.runCommand(command)
     _processPost(cmd_output, cmd_err, helper)
 
 
 def _slackMedia(curl, api_key, channel, text, file, helper):
-    command = "\"%s\" -F \"file=@%s\" -F \"initial_comment=%s\" -F \"channels=%s\" -H \"Authorization: Bearer %s\" \"https://slack.com/api/files.upload\"" % (
-        curl, file, text, channel, api_key)
+    command = "%s \"%s\" -F \"file=@%s\" -F \"initial_comment=%s\" -F \"channels=%s\" -H \"Authorization: Bearer %s\" \"https://slack.com/api/files.upload\"" % (
+        _checkForFakeTime(helper), curl, file, text, channel, api_key)
     helper.debug("command: %s" % command)
     (cmd_output, cmd_err) = Utils.runCommand(command)
     _processPost(cmd_output, cmd_err, helper)
