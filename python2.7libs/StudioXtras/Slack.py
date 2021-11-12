@@ -10,11 +10,12 @@ def _processPost(cmd_output, cmd_err, helper):
     helper.debug("cmd_err: %s" % cmd_err)
     try:
         out_dict = json.loads(cmd_output)
-        if "ok" in out_dict and not out_dict["ok"]:
-            helper.error("Error running Slack API", details=out_dict["error"])
+    #     if "ok" in out_dict and not out_dict["ok"]:
+    #         helper.error("Error running Slack API", details=out_dict["error"])
+    # except:
+    #     helper.error("Error running Slack API", details="%s\n%s" % (str(cmd_output), str(cmd_err)))
     except:
-        helper.error("Error running Slack API", details="%s\n%s" % (str(cmd_output), str(cmd_err)))
-
+        pass
 
 def _slackText(curl, api_key, channel, text, helper):
     command = "\"%s\" -F \"text=%s\" -F \"channel=%s\" -H \"Authorization:Bearer %s\" \"https://slack.com/api/chat.postMessage\"" % (
