@@ -19,32 +19,20 @@ def _processPost(cmd_output, cmd_err, helper):
 
 def _checkForFakeTime(helper):
     if "FAKETIME" in os.environ:
-        faketime_so = None
-        for path in os.environ["LD_PRELOAD"].split(" "):
-            if "libfaketime" in path:
-                faketime_so = path
-                break
-        if faketime_so is not None:
-            return "LD_PRELOAD=%s FAKETIME='-0d' FAKETIME_NO_CACHE=1" % faketime_so
-        else:
-            helper.error("Faketime found in Environ but cant find path to so file.")
-    elif os.path.exists("/usr/local/bin/faketime"):
-        return "/usr/local/bin/faketime -f \"-0d\""
-    else:
-        return ""
+        os.environ["FAKETIME"] = "-0d"
 
 
 def _slackText(curl, api_key, channel, text, helper):
-    command = "%s \"%s\" -F \"text=%s\" -F \"channel=%s\" -H \"Authorization:Bearer %s\" \"https://slack.com/api/chat.postMessage\"" % (
-        _checkForFakeTime(helper), curl, text, channel, api_key)
+    command = "\"%s\" -F \"text=%s\" -F \"channel=%s\" -H \"Authorization:Bearer %s\" \"https://slack.com/api/chat.postMessage\"" % (
+        curl, text, channel, api_key)
     helper.debug("command: %s" % command)
     (cmd_output, cmd_err) = Utils.runCommand(command)
     _processPost(cmd_output, cmd_err, helper)
 
 
 def _slackMedia(curl, api_key, channel, text, file, helper):
-    command = "%s \"%s\" -F \"file=@%s\" -F \"initial_comment=%s\" -F \"channels=%s\" -H \"Authorization: Bearer %s\" \"https://slack.com/api/files.upload\"" % (
-        _checkForFakeTime(helper), curl, file, text, channel, api_key)
+    command = "\"%s\" -F \"file=@%s\" -F \"initial_comment=%s\" -F \"channels=%s\" -H \"Authorization: Bearer %s\" \"https://slack.com/api/files.upload\"" % (
+        curl, file, text, channel, api_key)
     helper.debug("command: %s" % command)
     (cmd_output, cmd_err) = Utils.runCommand(command)
     _processPost(cmd_output, cmd_err, helper)
@@ -54,7 +42,7 @@ def run():
     Utils.makeTimestampEnv()
     node = hou.pwd()  # hou.node("..")
     helper = Utils.RopHelper(node.name(), debug=node.parm("debug").eval())
-
+    _checkForFakeTime(helper)
     # Get node params
     api_key = helper.getParm(node, "api_token")
     helper.debug("api_key: %s" % api_key)
