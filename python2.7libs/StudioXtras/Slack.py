@@ -19,13 +19,13 @@ def _processPost(cmd_output, cmd_err, helper):
 
 def _checkForFakeTime(helper):
     if "FAKETIME" in os.environ:
-        faketiem_so = None
-        for path in os.environ["LD_PRELOAD"]:
+        faketime_so = None
+        for path in os.environ["LD_PRELOAD"].split(" "):
             if "libfaketime" in path:
-                faketiem_so = path
+                faketime_so = path
                 break
-        if faketiem_so is not None:
-            return "LD_PRELOAD=%s FAKETIME='Now' FAKETIME_NO_CACHE=1" % faketiem_so
+        if faketime_so is not None:
+            return "LD_PRELOAD=%s FAKETIME='Now' FAKETIME_NO_CACHE=1" % faketime_so
         else:
             helper.error("Faketime found in Environ but cant find path to so file.")
     elif os.path.exists("/usr/local/bin/faketime"):
