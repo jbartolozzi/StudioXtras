@@ -25,7 +25,7 @@ def _checkForFakeTime(helper):
                 faketime_so = path
                 break
         if faketime_so is not None:
-            return "LD_PRELOAD=%s FAKETIME='Now' FAKETIME_NO_CACHE=1" % faketime_so
+            return "LD_PRELOAD=%s FAKETIME='-0d' FAKETIME_NO_CACHE=1" % faketime_so
         else:
             helper.error("Faketime found in Environ but cant find path to so file.")
     elif os.path.exists("/usr/local/bin/faketime"):
