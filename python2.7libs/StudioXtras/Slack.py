@@ -10,6 +10,8 @@ def _processPost(cmd_output, cmd_err, helper):
     helper.debug("cmd_err: %s" % cmd_err)
     try:
         out_dict = json.loads(cmd_output)
+        import sys
+        sys.stdout.write(out_dict)
     #     if "ok" in out_dict and not out_dict["ok"]:
     #         helper.error("Error running Slack API", details=out_dict["error"])
     # except:
