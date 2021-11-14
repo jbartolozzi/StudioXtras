@@ -67,16 +67,21 @@ def run():
     list_file = os.path.join(os.path.dirname(picture_parm.eval()), "ffmpeg_list.txt")
     helper.debug("list_file: %s" % list_file)
 
+    # The COP output is the converted JPG we use for the video
     cop_output = hou.node("./convert/output")
     output_image_parm = cop_output.parm("copoutput")
 
+    # Create the ffmpeg imagelist, and list of temp files to delete
     image_list, files_to_delete = _createImageList(
         f1, f2, f3, output_image_parm)
 
-    cop_output.render(verbose=True)
+    # Render out the temp converted images
+    cop_output.render()
 
+    # Write the ffmpeg imagelist
     _writeFfmpegList(list_file, image_list)
 
+    print("ALF_PROGRESS 75.0%")
     # Prepare directory for output file
     output_file = node.parm("vm_picture").eval()
     output_directory = os.path.dirname(output_file)
@@ -84,8 +89,9 @@ def run():
     output_file = output_file.replace(" ", "\\ ")
 
     if not os.path.exists(output_directory):
-        os.mkdir(output_directory)
+        os.makedirs(output_directory)
 
+    # Run ffmpeg
     command = "\"%s\" -y -r %s -f concat -i \"%s\" -r %s %s \"%s\"" % (ffmpeg_executable, fps,
                                                                        list_file, fps, node.parm("advanced_parameters").evalAsString(), output_file)
 
