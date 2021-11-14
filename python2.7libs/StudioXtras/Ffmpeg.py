@@ -1,42 +1,20 @@
 import hou
 import os
-import threading
 import time
 
 from StudioXtras import Utils
 reload(Utils)
 
 
-def _createImageList(first_frame, last_frame, step, picture_parm, enable_denoise_postfix, denoise_postfix):
+def _createImageList(first_frame, last_frame, step, picture_parm):
     def getExt(input):
         return "." + input.split(".")[-1]
     output = []
-    threads = []
     files_to_delete = []
     for frame in range(int(first_frame), int(last_frame + 1), int(step)):
         frame_file = picture_parm.evalAtFrame(frame)
-
-        if (enable_denoise_postfix):
-            ext = getExt(frame_file)
-            frame_file = frame_file.replace(ext, denoise_postfix + ext)
-
-        if not frame_file.endswith(".jpg"):
-            # Create a thread to run iconvert
-            jpg_frame_file = frame_file.replace(getExt(frame_file), ".jpg")
-
-            command = "iconvert -g auto %s %s" % (frame_file, jpg_frame_file)
-            t = threading.Thread(target=Utils.runCommand, args=(command,))
-            threads.append(t)
-            time.sleep(0.1)  # to avoid clogging resource error
-            t.start()
-
-            files_to_delete.append(jpg_frame_file)
-            frame_file = jpg_frame_file
-
         frame_file = os.path.basename(frame_file)
         output.append("file \'%s\'" % frame_file)
-    for thread in threads:
-        thread.join()
     return (output, files_to_delete)
 
 
@@ -80,16 +58,22 @@ def run():
         helper.log("Making directory %s." % dirname)
         os.makedirs(dirname)
 
+    # Set the invisible parm on the hda
+    # This avoids weird issues with the COPs parm linking
+    node.parm("output_file_path").deleteAllKeyframes()
+    node.parm("output_file_path").set(picture_parm)
+
     # Create image list
     list_file = os.path.join(os.path.dirname(picture_parm.eval()), "ffmpeg_list.txt")
     helper.debug("list_file: %s" % list_file)
 
-    # Write image list to render directory
-    enable_denoise_postfix = helper.getParm(node, "enable_denoise_postfix")
-    denoise_postfix = helper.getParm(node, "denoise_postfix")
+    cop_output = hou.node("./convert/output")
+    output_image_parm = cop_output.parm("copoutput")
 
     image_list, files_to_delete = _createImageList(
-        f1, f2, f3, picture_parm, enable_denoise_postfix, denoise_postfix)
+        f1, f2, f3, output_image_parm)
+
+    cop_output.render(verbose=True)
 
     _writeFfmpegList(list_file, image_list)
 

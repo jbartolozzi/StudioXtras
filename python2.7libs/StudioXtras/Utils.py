@@ -4,6 +4,22 @@ import traceback
 import subprocess
 from distutils.spawn import find_executable
 
+ROP_OUTPUT_FILE_PARMS = \
+    ["ar_picture",
+     "picture",
+     "vm_picture",
+     "ri_display_0",
+     "copoutput",
+     "HO_img_fileName",
+     "output"]
+
+
+def getPictureParm(node):
+    for parm_name in ROP_OUTPUT_FILE_PARMS:
+        if node.parm(parm_name) is not None:
+            return node.parm(parm_name)
+    return None
+
 
 class NodeHelper:
     def __init__(self, node_name, debug=False):
@@ -80,19 +96,10 @@ class RopHelper(NodeHelper):
         return op
 
     def getPictureParm(self, node):
-        parm_names = ["ar_picture",
-                      "picture",
-                      "vm_picture",
-                      "ri_display_0",
-                      "copoutput",
-                      "HO_img_fileName",
-                      "output"]
-        for parm_name in parm_names:
-            if node.parm(parm_name) is not None:
-                return node.parm(parm_name)
-
-        self.error("Unable to find picture or vm_picture parm from render target.")
-        return None
+        output = getPictureParm(node)
+        if output is None:
+            self.error("Unable to find picture or vm_picture parm from render target.")
+        return output
 
     def getImageList(self, first_frame, last_frame, step, picture_parm, check_if_exists=False):
         output = list(picture_parm.evalAtFrame(frame)
