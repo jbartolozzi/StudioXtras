@@ -11,7 +11,8 @@ def generateOutputPictureHscript():
     '''
     This helper function prints out a recrusive ifs
     hscript to automatically set the output file path parm without
-    having to use python. This way the hda can be locked inside of Renderbot
+    having to use python. This way the hda can be locked inside of Renderbot.
+    The parameter is used for COPs which has some weird bug where it links parameters.
     '''
     def _compareRecurse(parm_array):
         if len(parm_array):
