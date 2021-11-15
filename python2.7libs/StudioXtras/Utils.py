@@ -5,13 +5,15 @@ import subprocess
 from distutils.spawn import find_executable
 
 ROP_OUTPUT_FILE_PARMS = \
-    ["ar_picture",
-     "picture",
-     "vm_picture",
-     "ri_display_0",
-     "copoutput",
-     "HO_img_fileName",
-     "output"]
+    [
+        "copoutput",
+        "ar_picture",
+        "HO_img_fileName",
+        "output",
+        "picture",
+        "ri_display_0",
+        "vm_picture",
+    ]
 
 
 def getPictureParm(node):
@@ -19,6 +21,22 @@ def getPictureParm(node):
         if node.parm(parm_name) is not None:
             return node.parm(parm_name)
     return None
+
+
+def _printPictureParmHscript():
+    '''
+    This helper function prints out a recrusive ifs
+    hscript to automatically set the output file path parm without
+    having to use python. This way the hda can be locked inside of Renderbot
+    '''
+    def _compareRecurse(parm_array):
+        if len(parm_array):
+            parm_name = parm_array.pop()
+            return "ifs(strcmp(chs(chs(\"output_driver\")+\"/%s\"),\"\"), chs(chs(\"output_driver\")+\"/%s\"), %s)" % (parm_name, parm_name, _compareRecurse(parm_array))
+        else:
+            return "\"\""
+    compare_string = _compareRecurse(ROP_OUTPUT_FILE_PARMS)
+    print("`%s`" % compare_string)
 
 
 class NodeHelper:

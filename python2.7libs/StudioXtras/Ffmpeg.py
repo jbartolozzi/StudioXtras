@@ -7,6 +7,22 @@ from StudioXtras import Utils
 reload(Utils)
 
 
+def generateOutputPictureHscript():
+    '''
+    This helper function prints out a recrusive ifs
+    hscript to automatically set the output file path parm without
+    having to use python. This way the hda can be locked inside of Renderbot
+    '''
+    def _compareRecurse(parm_array):
+        if len(parm_array):
+            parm_name = parm_array.pop()
+            return "ifs(strcmp(chs(chs(\"output_driver\")+\"/%s\"),\"\"), chs(chs(\"output_driver\")+\"/%s\"), %s)" % (parm_name, parm_name, _compareRecurse(parm_array))
+        else:
+            return "\"\""
+    compare_string = _compareRecurse(Utils.ROP_OUTPUT_FILE_PARMS)
+    return("`%s`" % compare_string)
+
+
 def _createImageList(first_frame, last_frame, step, picture_parm):
     def getExt(input):
         return "." + input.split(".")[-1]
@@ -147,11 +163,6 @@ def run():
     if not os.path.exists(dirname):
         helper.log("Making directory %s." % dirname)
         os.makedirs(dirname)
-
-    # Set the invisible parm on the hda
-    # This avoids weird issues with the COPs parm linking
-    node.parm("output_file_path").deleteAllKeyframes()
-    node.parm("output_file_path").set(picture_parm)
 
     # Create image list
     list_file = os.path.join(os.path.dirname(picture_parm.eval()), "ffmpeg_list.txt")
