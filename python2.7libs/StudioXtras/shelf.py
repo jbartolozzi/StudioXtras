@@ -1,6 +1,16 @@
 import hou
 
 
+def alembicToConvexHull():
+    if len(hou.selectedNodes()) and hou.selectedNodes()[0].type().name() == "alembicarchive":
+        root = hou.selectedNodes()[0]
+        for child in root.recursiveGlob("*", filter=hou.nodeTypeFilter.Sop, include_subnets=True):
+            shrinkwrap = child.parent().createNode("shrinkwrap::2.0")
+            shrinkwrap.setInput(0, child, output_index=0)
+            shrinkwrap.setDisplayFlag(1)
+            shrinkwrap.setRenderFlag(1)
+
+
 def copyRenderRegionToArnold():
     desktop = hou.ui.curDesktop()
     ipr = desktop.paneTabOfType(hou.paneTabType.IPRViewer)
