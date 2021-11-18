@@ -65,9 +65,11 @@ class NodeHelper:
         else:
             executable_path = find_executable(executable_name)
 
-        if not os.path.exists(executable_path):
+        if not executable_path or not os.path.exists(executable_path):
             self.error("%s is not installed." % executable_name,
-                       details="Please install %s and update your PATH environment variable. Refer to documentation for setting app specfic path variables." % executable_name)
+                       details="Please install %s and update your PATH environment variable.\n\
+Refer to documentation for setting app specfic path variables such as:\n\
+STUDIO_XTRAS_FFMPEG, STUDIO_XTRAS_CURL, STUDIO_XTRAS_NUKE" % executable_name)
         return executable_path
 
 
