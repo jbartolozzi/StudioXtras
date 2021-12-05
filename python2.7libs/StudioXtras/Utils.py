@@ -23,13 +23,21 @@ def getPictureParm(node):
     return None
 
 
+def warning_text(node_name, warning_text):
+    return "StudioXtras Warning: %s\n    %s" % (node_name, warning_text)
+
+
+def error_text(node_name, error_text):
+    return "StudioXtras Error: %s\n    %s" % (node_name, error_text)
+
+
 class NodeHelper:
     def __init__(self, node_name, debug=False):
         self.node_name = node_name
         self.debug_mode = debug
 
     def error(self, text, details=""):
-        err_text = "StudioXtras Error: %s\n    %s" % (self.node_name, str(text))
+        err_text = error_text(self.node_name, str(text))
         print(err_text + "\n" + traceback.format_exc())
         if "ui" in dir(hou):
             hou.ui.displayMessage(text, title="StudioXtras Error",
@@ -137,3 +145,48 @@ def runCommand(command, disable_env=False, background=False):
 def makeTimestampEnv():
     hou.putenv("TIMESTAMP", hou.expandString(
         "$_HIP_SAVETIME").strip().replace(" ", "_").replace(":", "_"))
+
+
+def checkFilePaths():
+    def toUnix(inputpath):
+        return inputpath.replace("\\", "/")
+    import json
+    import os
+    pathmap_file_path = hou.text.expandString("${STUDIO_XTRAS_PATHMAP}")
+    if not os.path.exists(pathmap_file_path):
+        if "ui" in dir(hou):
+            hou.ui.displayMessage("Pathmap file not found.",
+                                  title="StudioXtras Error",
+                                  details="In your houdini.env file specify STUDIO_XTRAS_PATHMAP to point to a json file.",
+                                  severity=hou.severityType.Error)
+        else:
+            print(error_text("checkFilePaths",
+                             "Pathmap file not found. In your houdini.env file specify STUDIO_XTRAS_PATHMAP to point to a json file."))
+        return
+
+    correction_dict = {}
+    with open(pathmap_file_path, 'r') as infile:
+        correction_dict = json.load(infile)
+
+    root_node = hou.node("/")
+    failed = []
+
+    for parm in list(parm for parm in root_node.allParms() if
+                     parm.parmTemplate().type() == hou.parmTemplateType.String
+                     and parm.parmTemplate().stringType() == hou.stringParmType.FileReference):
+        try:
+            unexpanded = parm.unexpandedString()
+            for correction in correction_dict.keys():
+                if toUnix(correction) in toUnix(unexpanded):
+                    corrected_string = toUnix(unexpanded).replace(
+                        toUnix(correction), toUnix(correction_dict[correction]))
+                    if not os.path.exists(hou.expandString(corrected_string)):
+                        print(warning_text("checkFilePaths", "%s -> %s\n        %s not found on system." %
+                                           (parm.node().path(),
+                                            parm.name(),
+                                               hou.expandString(corrected_string))))
+                    parm.set(corrected_string)
+        except:
+            failed.append("%s : %s" % (parm.node().path(), parm.name()))
+    if len(failed):
+        print(error_text("checkFilePaths", "Unable to fix paths for the following:\n%s" % "\n".join(failed)))
