@@ -15,13 +15,13 @@ def _setup():
 
 
 def refreshString():
-    def _defaultText(node, parmname, parmtype):
+    def _defaultText(node, parmlabel, parmname, parmtype):
         if parmtype == 0:
             return "%s: `chs(\"%s/%s\")`\n" % \
-                (node.parm(parmname).name().title(), node.path(), parmname)
+                (parmlabel, node.path(), parmname)
         else:
             return "%s: `ftrim(ch(\"%s/%s\"))`\n" % \
-                (node.parm(parmname).name().title(), node.path(), parmname)
+                (parmlabel, node.path(), parmname)
 
     node = hou.pwd()
     target = hou.node(node.parm("target").eval())
@@ -31,10 +31,11 @@ def refreshString():
         return
     else:
         hud_text = target.name().title() + "\n"
-        for i in range(multiparm.multiParmInstancesCount() / 2):
+        for i in range(multiparm.multiParmInstancesCount() / 3):
+            parm_label = node.parm("parmlabel%s" % str(i + 1)).eval()
             parm_name = node.parm("parmname%s" % str(i + 1)).eval()
             parm_type = node.parm("parmtype%s" % str(i + 1)).eval()
-            hud_text += _defaultText(target, parm_name, parm_type)
+            hud_text += _defaultText(target, parm_label, parm_name, parm_type)
 
         node.parm("hud_text").set(hud_text)
 
@@ -43,7 +44,7 @@ def refresh():
     node = hou.pwd()
     target = hou.node(node.parm("target").eval())
     multiparm = node.parm("multiparm")
-    for i in range(multiparm.multiParmInstancesCount() / 2):
+    for i in range(multiparm.multiParmInstancesCount() / 3):
         multiparm.removeMultiParmInstance(0)
 
     if not target:
@@ -59,6 +60,7 @@ def refresh():
                                 hou.parmTemplateType.String: 0,
                                 hou.parmTemplateType.Int: 1}
             parm_type = parm.parmTemplate().type()
+            node.parm("parmlabel1").set(parm.description())
             if parm_type in parm_temp_to_int:
                 node.parm("parmtype1").set(parm_temp_to_int[parm_type])
             else:
