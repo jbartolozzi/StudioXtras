@@ -19,9 +19,6 @@ def refreshString():
         if parmtype == 0:
             return "%s: `chs(\"%s/%s\")`\n" % \
                 (node.parm(parmname).name().title(), node.path(), parmname)
-        # elif parmtype == 1:
-        #     return "%s: `chi(\"%s/%s\")`\n" % \
-        #         (node.parm(parmname).name().title(), node.path(), parmname)
         else:
             return "%s: `ftrim(ch(\"%s/%s\"))`\n" % \
                 (node.parm(parmname).name().title(), node.path(), parmname)
@@ -34,7 +31,6 @@ def refreshString():
         return
     else:
         hud_text = target.name().title() + "\n"
-        print(multiparm.multiParmInstancesCount())
         for i in range(multiparm.multiParmInstancesCount() / 2):
             parm_name = node.parm("parmname%s" % str(i + 1)).eval()
             parm_type = node.parm("parmtype%s" % str(i + 1)).eval()
