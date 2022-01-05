@@ -33,12 +33,15 @@ def addSelection():
     target = hou.node(node.parm("target").eval())
     if target is None:
         return
-    multiparm = node.parm("multiparm")
-    multiparm.insertMultiParmInstance(0)
+
     parm_string = node.parm("parm_creator").evalAsString()
     parm = target.parm(parm_string)
     if not parm:
         return
+
+    multiparm = node.parm("multiparm")
+    multiparm.insertMultiParmInstance(0)
+
     node.parm("parmname1").set(parm.name())
     parm_temp_to_int = {hou.parmTemplateType.Float: 2,
                         hou.parmTemplateType.String: 0,
