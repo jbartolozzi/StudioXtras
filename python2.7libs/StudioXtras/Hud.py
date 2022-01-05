@@ -21,9 +21,11 @@ def createParmSelector():
         return ["", ""]
     parms = list(parm for parm in target.parms() if not parm.isHidden())
     parms.sort(key=lambda x: x.name())
-    return list(a for b in zip(
-        list(parm.name() for parm in parms),
-        list(parm.description() for parm in parms)) for a in b)
+    names = list(parm.name() for parm in parms)
+    titles = list(parm.description() for parm in parms)
+    names.insert(0, "_select")
+    titles.insert(0, "Select Parm")
+    return list(a for b in zip(names, titles) for a in b)
 
 
 def addSelection():
@@ -48,6 +50,7 @@ def addSelection():
     else:
         node.parm("parmtype1").set(2)
     refreshString()
+    parm_string = node.parm("parm_creator").set(0)
 
 
 def refreshString():
