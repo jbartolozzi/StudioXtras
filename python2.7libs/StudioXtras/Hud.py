@@ -14,6 +14,42 @@ def _setup():
     return (node, target, format_dict)
 
 
+def createParmSelector():
+    node = hou.pwd()
+    target = hou.node(node.parm("target").eval())
+    if not target:
+        return ["", ""]
+    parms = list(parm for parm in target.parms() if not parm.isHidden())
+    parms.sort(key=lambda x: x.name())
+    return list(a for b in zip(
+        list(parm.name() for parm in parms),
+        list(parm.description() for parm in parms)) for a in b)
+
+
+def addSelection():
+    node = hou.pwd()
+    target = hou.node(node.parm("target").eval())
+    if target is None:
+        return
+    multiparm = node.parm("multiparm")
+    multiparm.insertMultiParmInstance(0)
+    parm_string = node.parm("parm_creator").evalAsString()
+    parm = target.parm(parm_string)
+    if not parm:
+        return
+    node.parm("parmname1").set(parm.name())
+    parm_temp_to_int = {hou.parmTemplateType.Float: 2,
+                        hou.parmTemplateType.String: 0,
+                        hou.parmTemplateType.Int: 1}
+    parm_type = parm.parmTemplate().type()
+    node.parm("parmlabel1").set(parm.description())
+    if parm_type in parm_temp_to_int:
+        node.parm("parmtype1").set(parm_temp_to_int[parm_type])
+    else:
+        node.parm("parmtype1").set(2)
+    refreshString()
+
+
 def refreshString():
     def _defaultText(node, parmlabel, parmname, parmtype):
         if parmtype == 0:
