@@ -23,9 +23,14 @@ def createParmSelector():
     parms.sort(key=lambda x: x.name())
     names = list(parm.name() for parm in parms)
     titles = list(parm.description() for parm in parms)
-    names.insert(0, "_select")
-    titles.insert(0, "Select Parm")
-    return list(a for b in zip(names, titles) for a in b)
+    output = []
+    for name, title in zip(names, titles):
+        output.append(name)
+        output.append("%s (%s)" % (title, name))
+
+    output.insert(0, "Select Parm")
+    output.insert(0, "")
+    return output
 
 
 def addSelection():
@@ -45,7 +50,8 @@ def addSelection():
     node.parm("parmname1").set(parm.name())
     parm_temp_to_int = {hou.parmTemplateType.Float: 2,
                         hou.parmTemplateType.String: 0,
-                        hou.parmTemplateType.Int: 1}
+                        hou.parmTemplateType.Int: 1,
+                        hou.parmTemplateType.Menu: 0}
     parm_type = parm.parmTemplate().type()
     node.parm("parmlabel1").set(parm.description())
     if parm_type in parm_temp_to_int:
