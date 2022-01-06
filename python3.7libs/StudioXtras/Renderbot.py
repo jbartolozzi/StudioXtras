@@ -49,7 +49,7 @@ def updateArnoldPreset():
     if arnold_rop is None:
         raise hou.NodeWarning("Cannot locate arnold ROP")
 
-    mode = hou.pwd().parm("preset").eval()
+    mode = hou.pwd().parm("arnold_preset").eval()
     if mode == 0:
         for parm_name, val in SETTINGS_LOW["render"].items():
             arnold_rop.parm(parm_name).set(val)
@@ -65,7 +65,7 @@ def updateArnoldPreset():
         if denoiser_rop is None:
             raise hou.NodeWarning("Cannot locate arnold ROP")
 
-        mode = hou.pwd().parm("preset").eval()
+        mode = hou.pwd().parm("arnold_preset").eval()
         if mode == 0:
             for parm_name, val in SETTINGS_LOW["denoiser"].items():
                 denoiser_rop.parm(parm_name).set(val)
