@@ -17,8 +17,6 @@ ROP_OUTPUT_FILE_PARMS = \
         "output",
     ]
 
-print("HEY")
-
 def getPictureParm(node):
     for parm_name in ROP_OUTPUT_FILE_PARMS:
         if node.parm(parm_name) is not None:
