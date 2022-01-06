@@ -73,7 +73,7 @@ def refreshString():
         return
     else:
         hud_text = target.name().title() + "\n"
-        for i in range(multiparm.multiParmInstancesCount() / 3):
+        for i in range(int(multiparm.multiParmInstancesCount() / 3)):
             parm_label = node.parm("parmlabel%s" % str(i + 1)).eval()
             parm_name = node.parm("parmname%s" % str(i + 1)).eval()
             parm_type = node.parm("parmtype%s" % str(i + 1)).eval()
@@ -86,7 +86,7 @@ def refresh():
     node = hou.pwd()
     target = hou.node(node.parm("target").eval())
     multiparm = node.parm("multiparm")
-    for i in range(multiparm.multiParmInstancesCount() / 3):
+    for i in range(int(multiparm.multiParmInstancesCount() / 3)):
         multiparm.removeMultiParmInstance(0)
 
     if not target:
