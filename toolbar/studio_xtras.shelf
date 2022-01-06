@@ -40,7 +40,7 @@ reload(shelf)
 shelf.importFromPy()]]></script>
   </tool>
 
-  <tool name="check_paths" label="Check File Paths" icon="${STUDIO_XTRAS}/icons/tool.svg">
+  <tool name="check_paths" label="Check File Paths" icon="${STUDIO_XTRAS}/icons/folder.svg">
     <script scriptType="python"><![CDATA[import os, sys
 from importlib import reload
 from StudioXtras import shelf
