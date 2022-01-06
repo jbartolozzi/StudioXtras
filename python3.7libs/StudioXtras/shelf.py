@@ -1,5 +1,5 @@
 import hou
-
+from importlib import reload
 
 def alembicToConvexHull():
     if len(hou.selectedNodes()) and hou.selectedNodes()[0].type().name() == "alembicarchive":

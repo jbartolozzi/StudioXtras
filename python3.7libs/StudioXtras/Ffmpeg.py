@@ -2,7 +2,7 @@ import hou
 import os
 import json
 import time
-
+from importlib import reload
 from StudioXtras import Utils
 reload(Utils)
 

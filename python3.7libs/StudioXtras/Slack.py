@@ -1,7 +1,7 @@
 import hou
 import json
 import os
-
+from importlib import reload
 from StudioXtras import Utils
 reload(Utils)
 
