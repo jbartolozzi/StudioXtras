@@ -224,9 +224,9 @@ def run():
                 output_file)
 
     cmd_output, cmd_err = Utils.runCommand(ffmpeg_command)
+    cmd_err = str(cmd_err)
     helper.debug(ffmpeg_command)
     helper.debug("%s\n%s" % (cmd_output, cmd_err))
-
     files_to_delete.append(list_file)
     for del_file in files_to_delete:
         if os.path.exists(del_file):
