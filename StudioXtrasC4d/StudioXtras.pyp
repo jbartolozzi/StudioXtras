@@ -16,7 +16,7 @@ def loadBitmap(path):
 
 class CheckPathsCommand(c4d.plugins.CommandData):
 
-    PLUGIN_ID = 123456789
+    PLUGIN_ID = 123456999
     PLUGIN_NAME = "Check Paths"
     PLUGIN_INFO = 0
     PLUGIN_ICON = loadBitmap("checkpaths.tiff")
@@ -33,7 +33,7 @@ class CheckPathsCommand(c4d.plugins.CommandData):
 
 class RenderbotCommand(c4d.plugins.CommandData):
 
-    PLUGIN_ID = 123456700
+    PLUGIN_ID = 123456799
     PLUGIN_NAME = "Renderbot"
     PLUGIN_INFO = 0
     PLUGIN_ICON = loadBitmap("renderbot.tiff")
