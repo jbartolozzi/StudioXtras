@@ -13,7 +13,7 @@
     <memberTool name="alembic_scene_convex_hulls"/>
   </toolshelf>
 
-  <tool name="copy_render_region_to_rop" label="Copy Render Region to ROP" icon="${STUDIO_XTRAS}/icons/tool.svg">
+  <tool name="copy_render_region_to_rop" label="Copy Render Region to ROP" icon="${STUDIO_XTRAS}/icons/region.svg">
     <helpText><![CDATA[This shelf tool will copy the crop region from the current Render View pane to the Render View's selected Arnold Rop.
 It will enable the User Options parameter and fill in the necessary Arnold ASS parameters.
 If no region is selected, it will  clear the options out.]]></helpText>
