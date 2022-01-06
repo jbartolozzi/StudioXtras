@@ -4,6 +4,7 @@ import os
 import subprocess
 import traceback
 import time
+import concurrent.futures
 from distutils.spawn import find_executable
 
 ROP_OUTPUT_FILE_PARMS = \
@@ -16,6 +17,7 @@ ROP_OUTPUT_FILE_PARMS = \
         "copoutput",
         "output",
     ]
+
 
 def getPictureParm(node):
     for parm_name in ROP_OUTPUT_FILE_PARMS:
@@ -152,7 +154,19 @@ def checkFilePaths():
     def toUnix(inputpath):
         return inputpath.replace("\\", "/")
 
-    tstart = time.time()  # perf_counter()
+    def _getCorrected(parm_path, unexpanded, correction_dict):
+        # unexpanded = parm.unexpandedString()
+        for correction in correction_dict:
+            correction_toUnix = toUnix(correction)
+            unexpanded_toUnix = toUnix(unexpanded)
+            if correction_toUnix in unexpanded_toUnix:
+                corrected_string = unexpanded_toUnix.replace(
+                    correction_toUnix, toUnix(correction_dict[correction]))
+                # if not os.path.exists(hou.expandString(corrected_string)):
+                return (parm_path, corrected_string)
+        return (parm_path, None)
+
+    tstart = time.perf_counter()
 
     pathmap_file_path = hou.text.expandString("${STUDIO_XTRAS_PATHMAP}")
     if not os.path.exists(pathmap_file_path):
@@ -171,31 +185,24 @@ def checkFilePaths():
         correction_dict = json.load(infile)
 
     root_node = hou.node("/")
-    total = 0
-    corrected = 0
 
-    for parm in list(parm for parm in root_node.allParms() if
+    all_parms = list(parm for parm in root_node.allParms() if
                      parm.parmTemplate().type() == hou.parmTemplateType.String
                      and parm.parmTemplate().stringType() == hou.stringParmType.FileReference
-                     and not parm.keyframes() 
-                     and parm.eval() != ""):
-            
-            unexpanded = parm.unexpandedString()
-            total += 1
-            for correction in correction_dict.keys():
-                correction_toUnix = toUnix(correction)
-                unexpanded_toUnix = toUnix(unexpanded)
-                if correction_toUnix in unexpanded_toUnix:
-                    corrected_string = unexpanded_toUnix.replace(correction_toUnix, toUnix(correction_dict[correction]))
-                    if not os.path.exists(hou.expandString(corrected_string)):
-                        print(warning_text("checkFilePaths", "%s -> %s\n        %s not found on system." %
-                                           (parm.node().path(), parm.name(), hou.expandString(corrected_string))))
-                    else:
-                        if not parm.isLocked() and not parm.isDisabled():
-                            parm.set(corrected_string)
-                            corrected += 1
-                            break
+                     and not parm.keyframes()
+                     and parm.eval() != ""
+                     and not parm.isLocked()
+                     and not parm.isDisabled())
+    num_corrected = 0
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        threads = {executor.submit(_getCorrected, parm.path(), parm.unexpandedString(
+        ), correction_dict.copy()): parm for parm in all_parms}
+        for thread in threads:
+            parm_path, corrected = thread.result()
+            if corrected:
+                hou.parm(parm_path).set(corrected)
+                num_corrected += 1
 
-    tend = time.time()  # perf_counter()
+    tend = time.perf_counter()
     timetotal = tend - tstart
-    print("Checked %s paths, Updated %s paths in %ss." %(total, corrected, timetotal))
+    print("Checked %s paths, Updated %s paths in %ss." % (len(all_parms), num_corrected, timetotal))

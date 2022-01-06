@@ -43,8 +43,9 @@ shelf.importFromPy()]]></script>
   <tool name="check_paths" label="Check File Paths" icon="${STUDIO_XTRAS}/icons/folder.svg">
     <script scriptType="python"><![CDATA[import os, sys
 from importlib import reload
-from StudioXtras import shelf
-shelf.checkFilePaths()]]></script>
+from StudioXtras import Utils
+reload(Utils)
+Utils.checkFilePaths()]]></script>
   </tool>
 
   <tool name="alembic_scene_convex_hulls" label="Alembic to Convex Hull" icon="${STUDIO_XTRAS}/icons/tool.svg">
