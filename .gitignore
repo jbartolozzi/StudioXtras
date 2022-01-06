@@ -131,3 +131,4 @@ dmypy.json
 icons.afphoto
 otls/backup
 update_data.sh
+*.DS_STORE
