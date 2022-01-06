@@ -17,6 +17,7 @@ ROP_OUTPUT_FILE_PARMS = \
         "output",
     ]
 
+print("HEY")
 
 def getPictureParm(node):
     for parm_name in ROP_OUTPUT_FILE_PARMS:
