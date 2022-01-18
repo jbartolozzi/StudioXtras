@@ -155,14 +155,12 @@ def checkFilePaths():
         return inputpath.replace("\\", "/")
 
     def _getCorrected(parm_path, unexpanded, correction_dict):
-        # unexpanded = parm.unexpandedString()
-        for correction in correction_dict:
-            correction_toUnix = toUnix(correction)
+        for match, correction in correction_dict.items():
+            correction_toUnix = toUnix(match)
             unexpanded_toUnix = toUnix(unexpanded)
             if correction_toUnix in unexpanded_toUnix:
                 corrected_string = unexpanded_toUnix.replace(
-                    correction_toUnix, toUnix(correction_dict[correction]))
-                # if not os.path.exists(hou.expandString(corrected_string)):
+                    correction_toUnix, toUnix(correction))
                 return (parm_path, corrected_string)
         return (parm_path, None)
 
@@ -185,7 +183,6 @@ def checkFilePaths():
         correction_dict = json.load(infile)
 
     root_node = hou.node("/")
-
     all_parms = list(parm for parm in root_node.allParms() if
                      parm.parmTemplate().type() == hou.parmTemplateType.String
                      and parm.parmTemplate().stringType() == hou.stringParmType.FileReference
@@ -193,15 +190,18 @@ def checkFilePaths():
                      and parm.eval() != ""
                      and not parm.isLocked()
                      and not parm.isDisabled())
+
     num_corrected = 0
+
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        threads = {executor.submit(_getCorrected, parm.path(), parm.unexpandedString(
-        ), correction_dict.copy()): parm for parm in all_parms}
-        for thread in threads:
-            parm_path, corrected = thread.result()
-            if corrected:
-                hou.parm(parm_path).set(corrected)
-                num_corrected += 1
+        threads = [executor.submit(_getCorrected, parm.path(), parm.unexpandedString(
+        ), correction_dict.copy()) for parm in all_parms]
+
+    results = [thread.result() for thread in threads]
+    for parm_path, corrected in results:
+        if corrected:
+            hou.parm(parm_path).set(corrected)
+            num_corrected += 1
 
     tend = time.perf_counter()
     timetotal = tend - tstart
