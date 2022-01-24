@@ -1,6 +1,7 @@
 import hou
 from importlib import reload
 
+
 def alembicToConvexHull():
     if len(hou.selectedNodes()) and hou.selectedNodes()[0].type().name() == "alembicarchive":
         root = hou.selectedNodes()[0]
@@ -115,19 +116,19 @@ def exportToPy():
 
 def importFromPy():
     import os
-    python_file = hou.ui.selectFile(start_directory=hou.expandString("$HIP"),
-                                    title="Export Selection to JSON",
-                                    collapse_sequences=False,
-                                    file_type=hou.fileType.Any,
-                                    pattern="*.py",
-                                    default_value=None,
-                                    multiple_select=False,
-                                    image_chooser=None,
-                                    chooser_mode=hou.fileChooserMode.Write,
-                                    width=0, height=0)
+    python_file = hou.expandString(hou.ui.selectFile(start_directory=hou.expandString("$HIP"),
+                                                     title="Export Selection to JSON",
+                                                     collapse_sequences=False,
+                                                     file_type=hou.fileType.Any,
+                                                     pattern="*.py",
+                                                     default_value=None,
+                                                     multiple_select=False,
+                                                     image_chooser=None,
+                                                     chooser_mode=hou.fileChooserMode.Write,
+                                                     width=0, height=0))
 
     if python_file is not None and os.path.exists(python_file):
-        with open(hou.expandString(python_file)) as infile:
+        with open(python_file) as infile:
             exec(infile.read())
 
 
