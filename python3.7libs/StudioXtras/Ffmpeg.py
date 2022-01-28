@@ -214,10 +214,18 @@ def run():
 
     else:
         # Run ffmpeg
-        ffmpeg_command = "\"%s\" -hide_banner -y -r %s -gamma %s -f concat -i \"%s\" -r %s %s \"%s\"" % \
+        # ffmpeg_command = "\"%s\" -hide_banner -y -r %s -gamma %s -f concat -i \"%s\" -r %s %s \"%s\"" % \
+        #     (ffmpeg_executable,
+        #         fps,
+        #         gamma,
+        #         list_file,
+        #         fps,
+        #         node.parm("advanced_parameters").evalAsString(),
+        #         output_file)
+
+        ffmpeg_command = "\"%s\" -hide_banner -y -r %s -f concat -i \"%s\" -r %s %s \"%s\"" % \
             (ffmpeg_executable,
                 fps,
-                gamma,
                 list_file,
                 fps,
                 node.parm("advanced_parameters").evalAsString(),
