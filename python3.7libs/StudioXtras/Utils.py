@@ -27,11 +27,11 @@ def getPictureParm(node):
 
 
 def warning_text(node_name, warning_text):
-    return "StudioXtras Warning: %s\n    %s" % (node_name, warning_text)
+    return "StudioXtras: %s\n    %s" % (node_name, warning_text)
 
 
 def error_text(node_name, error_text):
-    return "StudioXtras Error: %s\n    %s" % (node_name, error_text)
+    return "StudioXtras: %s\n    %s" % (node_name, error_text)
 
 
 class NodeHelper:

@@ -2,6 +2,7 @@ import hou
 import os
 import json
 import time
+import secrets
 from importlib import reload
 from StudioXtras import Utils
 reload(Utils)
@@ -166,7 +167,8 @@ def run():
         os.makedirs(dirname)
 
     # Create image list
-    list_file = os.path.join(os.path.dirname(picture_parm.eval()), "ffmpeg_list.txt")
+    hashname = secrets.token_hex(8)
+    list_file = os.path.join(os.path.dirname(picture_parm.eval()), f"ffmpeg_list_{hashname}.txt")
     helper.debug("list_file: %s" % list_file)
 
     if node.parm("ocio_convert").eval():
@@ -222,20 +224,18 @@ def run():
         #         fps,
         #         node.parm("advanced_parameters").evalAsString(),
         #         output_file)
-
-        ffmpeg_command = "\"%s\" -hide_banner -y -r %s -f concat -i \"%s\" -r %s %s \"%s\"" % \
-            (ffmpeg_executable,
-                fps,
-                list_file,
-                fps,
-                node.parm("advanced_parameters").evalAsString(),
-                output_file)
+        advanced_parameters = node.parm("advanced_parameters").evalAsString()
+        ffmpeg_command = f"\"{ffmpeg_executable}\" -hide_banner -y -r {fps} -f concat -i \"{list_file}\" -r {fps} {advanced_parameters} \"{output_file}\""
 
     cmd_output, cmd_err = Utils.runCommand(ffmpeg_command)
+
     cmd_err = str(cmd_err)
+
     helper.debug(ffmpeg_command)
-    helper.debug("%s\n%s" % (cmd_output, cmd_err))
+    helper.log("%s\n%s" % (cmd_output, cmd_err))
+
     files_to_delete.append(list_file)
+
     for del_file in files_to_delete:
         if os.path.exists(del_file):
             try:
