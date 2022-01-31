@@ -147,7 +147,10 @@ def runCommand(command, disable_env=False, background=False):
 
 def makeTimestampEnv():
     strval = hou.expandString("$_HIP_SAVETIME").split(" ")
-    timestamp = "".join(strval[1:3] + ["_"] + strval[3].split(":")[:2])
+    if len(strval) > 3:
+        timestamp = "".join(strval[1:3] + ["_"] + strval[3].split(":")[:2])
+    else:
+        timestamp = ""
     hou.putenv("TIMESTAMP", timestamp)
 
 
