@@ -146,8 +146,9 @@ def runCommand(command, disable_env=False, background=False):
 
 
 def makeTimestampEnv():
-    hou.putenv("TIMESTAMP", hou.expandString(
-        "$_HIP_SAVETIME").strip().replace(" ", "_").replace(":", "_"))
+    strval = hou.expandString("$_HIP_SAVETIME").split(" ")
+    timestamp = "".join(strval[1:3] + ["_"] + strval[3].split(":")[:2])
+    hou.putenv("TIMESTAMP", timestamp)
 
 
 def checkFilePaths():
