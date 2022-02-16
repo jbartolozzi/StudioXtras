@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=0.9.4
+Name=Deadline Monitor 10
+Comment=Launch the Deadline Monitor
+Icon=/opt/Thinkbox/Deadline10/icons/Deadline_Monitor.png
+Exec=/opt/Thinkbox/Deadline10/bin/deadlinemonitor -new
+Terminal=false
+Path=/opt/Thinkbox/Deadline10/bin
