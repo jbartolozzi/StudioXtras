@@ -168,6 +168,11 @@ def checkFilePaths():
                 return (parm_path, corrected_string)
         return (parm_path, None)
 
+    if "STUDIO_XTRAS_DISABLE_CHECKPATHS" in os.environ:
+        if os.environ["STUDIO_XTRAS_DISABLE_CHECKPATHS"] == "1":
+            print("Check filepaths disabled. To enable set STUDIO_XTRAS_DISABLE_CHECKPATHS to 0.")
+            return
+
     tstart = time.perf_counter()
 
     pathmap_file_path = hou.text.expandString("${STUDIO_XTRAS_PATHMAP}")

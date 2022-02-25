@@ -1,4 +1,5 @@
 import hou
+import os
 from importlib import reload
 
 
@@ -135,4 +136,10 @@ def importFromPy():
 def checkFilePaths():
     from . import Utils
     reload(Utils)
+    backup = "0"
+    if "STUDIO_XTRAS_DISABLE_CHECKPATHS" in os.environ:
+        backup = os.environ["STUDIO_XTRAS_DISABLE_CHECKPATHS"]
+        os.putenv("STUDIO_XTRAS_DISABLE_CHECKPATHS", "0")
+
     Utils.checkFilePaths()
+    os.putenv("STUDIO_XTRAS_DISABLE_CHECKPATHS", backup)
