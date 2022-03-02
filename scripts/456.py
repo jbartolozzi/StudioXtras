@@ -9,6 +9,8 @@ def callback(event_type):
         reload(Utils)
         if event_type == hou.hipFileEventType.BeforeSave:
             Utils.checkFilePaths()
+        if event_type == hou.hipFileEventType.AfterLoad:
+            Utils.runGooey()
     except Exception as e:
         print(str(e))
 

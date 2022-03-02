@@ -133,6 +133,7 @@ def runCommand(command, disable_env=False, background=False):
         else:
             process = subprocess.Popen(
                 command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        return ("", "")
     else:
         if disable_env:
             process = subprocess.Popen(command, env={}, shell=True,
@@ -215,3 +216,32 @@ def checkFilePaths():
     tend = time.perf_counter()
     timetotal = tend - tstart
     print("Checked %s paths, Updated %s paths in %ss." % (len(all_parms), num_corrected, timetotal))
+
+
+def getGooeyFileName():
+    hip_file = hou.hipFile.path()
+    file_name, extension = os.path.splitext(hip_file)
+    gooey_file = hip_file.replace(extension, ".gooey")
+    return gooey_file
+
+
+def runGooey():
+    gooey_file = getGooeyFileName()
+    # If gooey file exists render the rop from the gooey file
+    if os.path.exists(gooey_file):
+        print(f"Found Gooey file {gooey_file}.")
+        print(hou.hipFile.path())
+        with open(gooey_file, 'r') as infile:
+            json_dict = json.load(infile)
+            if "rop" in json_dict:
+                rop = hou.node(json_dict["rop"])
+                if rop:
+                    print(f"Gooey Rendering Rop: {rop.path()}")
+                    try:
+                        rop.render(verbose=True, output_progress=True)
+                    except:
+                        print(traceback.format_exc())
+        # os.remove(gooey_file)
+        hou.exit(exit_code=0, suppress_save_prompt=True)
+    else:
+        return
