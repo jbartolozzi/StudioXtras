@@ -1,14 +1,21 @@
 import hou
 import json
+
 from importlib import reload
 from StudioXtras import Utils
+# from subprocess import Popen, PIPE, CalledProcessError
+import sys
+import subprocess
 reload(Utils)
 
 
 def run():
     node = hou.pwd()
     helper = Utils.RopHelper(node.name(), debug=node.parm("debug").eval())
-    hou.hipFile.save(file_name=None, save_to_recent_files=True)
+    if node.parm("save_on_exec").eval():
+        helper.log(f"Saving {hou.hipFile.path()}")
+
+        hou.hipFile.save(file_name=None, save_to_recent_files=True)
     if len(node.inputs()):
         target = node.inputs()[0]
     else:
@@ -24,6 +31,12 @@ def run():
 
     houdinifx = helper.executablePath("houdinifx")
     command = f"{houdinifx} {hou.hipFile.path()}"
-    cmd_output, cmd_err = Utils.runCommand(command)
-    print(cmd_output.decode("utf-8"))
-    print(cmd_err.decode("utf-8"))
+
+    helper.log(f"Running command {command}")
+
+    with subprocess.Popen(command.split(" "), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
+        for line in p.stdout:
+            print(line, end='')  # process line here
+
+    if p.returncode != 0:
+        raise subprocess.CalledProcessError(p.returncode, p.args)
