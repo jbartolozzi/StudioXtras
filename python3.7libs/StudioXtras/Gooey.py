@@ -29,7 +29,7 @@ def run():
         json.dump(out_dict, outfile)
 
     houdinifx = helper.executablePath("houdinifx")
-    command = f"{houdinifx} -foreground {hou.hipFile.path()}"
+    command = f"{houdinifx} {hou.hipFile.path()}"
 
     helper.log(f"Running command {command}")
 
