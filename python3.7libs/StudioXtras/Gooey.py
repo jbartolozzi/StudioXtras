@@ -33,7 +33,8 @@ def run():
 
     helper.log(f"Running command {command}")
 
-    with subprocess.Popen(command.split(" "), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
+    env = os.environ.copy()
+    with subprocess.Popen(command.split(" "), stdout=subprocess.PIPE, bufsize=1, env=env, universal_newlines=True) as p:
         pid = p.pid
         helper.log(f"Starting process with pid: {pid}")
         for line in p.stdout:
