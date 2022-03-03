@@ -226,6 +226,7 @@ def getGooeyFileName():
 
 
 def runGooey():
+    hou.exit(exit_code=0, suppress_save_prompt=True)
     gooey_file = getGooeyFileName()
     # If gooey file exists render the rop from the gooey file
     if os.path.exists(gooey_file):

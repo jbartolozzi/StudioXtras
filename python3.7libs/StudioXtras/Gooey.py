@@ -41,5 +41,5 @@ def run():
             if "error" in line.lower():
                 print(f"Found error in Gooey job.")
                 p.kill()
-            if "ALF_PROGRESS 100%" in line:
-                p.kill()
+            # if "ALF_PROGRESS 100%" in line:
+            #     p.kill()
