@@ -30,11 +30,12 @@ def run():
         json.dump(out_dict, outfile)
 
     houdinifx = helper.executablePath("houdinifx")
-    command = f"{houdinifx} {hou.hipFile.path()}"
+    command = f"{houdinifx} -foreground {hou.hipFile.path()}"
 
     helper.log(f"Running command {command}")
 
     with subprocess.Popen(command.split(" "), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
+        helper.log(f"Starting process with pid: {p.pid}")
         for line in p.stdout:
             print(line, end='')
             if "error" in line.lower():
