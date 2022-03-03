@@ -1,10 +1,9 @@
 import hou
 import json
-
+import os
+import signal
 from importlib import reload
 from StudioXtras import Utils
-# from subprocess import Popen, PIPE, CalledProcessError
-import sys
 import subprocess
 reload(Utils)
 
@@ -34,13 +33,15 @@ def run():
 
     helper.log(f"Running command {command}")
 
+    pid = -1
     with subprocess.Popen(command.split(" "), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
-        helper.log(f"Starting process with pid: {p.pid}")
+        pid = p.pid
+        helper.log(f"Starting process with pid: {pid}")
         for line in p.stdout:
             print(line, end='')
             if "error" in line.lower():
                 helper.error(f"Found error in Gooey job.")
-                p.kill()
+                os.kill(p.pid, signal.SIGTERM)
 
     if p.returncode != 0:
         raise subprocess.CalledProcessError(p.returncode, p.args)
