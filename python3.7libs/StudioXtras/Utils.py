@@ -243,7 +243,7 @@ def runGooey():
                         print(traceback.format_exc())
 
         os.remove(gooey_file)
-        hou.exit(exit_code=0, suppress_save_prompt=True)
+        # hou.exit(exit_code=0, suppress_save_prompt=True) # This hangs linux
         print("Gooey Complete")
     else:
         return
