@@ -239,7 +239,7 @@ def runGooey():
                     try:
                         rop.render(verbose=True, output_progress=True)
                     except Exception as e:
-                        break
+                        print(traceback.format_exc())
         os.remove(gooey_file)
         hou.exit(exit_code=0, suppress_save_prompt=True)
     else:
