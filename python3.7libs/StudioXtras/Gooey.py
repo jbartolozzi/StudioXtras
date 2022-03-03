@@ -29,7 +29,7 @@ def run():
         json.dump(out_dict, outfile)
 
     houdinifx = helper.executablePath("houdinifx")
-    command = f"{houdinifx} {hou.hipFile.path()}"
+    command = f"{houdinifx} -foreground {hou.hipFile.path()}"
 
     helper.log(f"Running command {command}")
 
@@ -41,6 +41,7 @@ def run():
             print(line, end='')
             if "error" in line.lower():
                 print(f"Found error in Gooey job.")
-                p.kill()
+                os.kill(p.pid, signal.SIGKILL)
             if "Gooey Complete" in line:
-                p.kill()
+                os.kill(p.pid, signal.SIGKILL)
+
