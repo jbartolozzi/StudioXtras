@@ -8,17 +8,17 @@ from StudioXtras import Utils
 import subprocess
 reload(Utils)
 
+
 def getActiveDisplays():
     if platform.system() == "Linux":
         command = "ps e | grep -Po \" DISPLAY=[\\.0-9A-Za-z:]* \" | sort -u"
         output, error = Utils.runCommand(command)
-        displays = list(line.strip() for line in output.decode("utf-8").split("\n") if "display" in line.lower())
+        displays = list(line.strip() for line in output.decode(
+            "utf-8").split("\n") if "display" in line.lower())
         if len(displays):
             return list(display.split("=")[1] for display in displays)
-        else:
-            return []
-    else:
-        return []
+
+    return []
 
 
 def run():
@@ -50,7 +50,7 @@ def run():
     command = f"{houdinifx} -foreground {hou.hipFile.path()}"
 
     helper.log(f"Running command {command}")
-    
+
     with subprocess.Popen(command.split(" "), stdout=subprocess.PIPE, bufsize=1, env=env, universal_newlines=True) as p:
         pid = p.pid
         helper.log(f"Starting process with pid: {pid}")
@@ -58,7 +58,6 @@ def run():
             print(line, end='')
             if "error" in line.lower():
                 print(f"Found error in Gooey job.")
-                os.kill(p.pid, signal.SIGKILL)
+                os.kill(p.pid, signal.SIGTERM)
             if "Gooey Complete" in line:
-                os.kill(p.pid, signal.SIGKILL)
-
+                os.kill(p.pid, signal.SIGTERM)
