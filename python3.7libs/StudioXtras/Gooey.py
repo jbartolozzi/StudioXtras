@@ -37,9 +37,9 @@ def run():
     with subprocess.Popen(command.split(" "), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
         for line in p.stdout:
             print(line, end='')
-            if "Error" in line:
+            if "error" in line.lower():
                 helper.error(f"Found error in Gooey job.")
-                p.terminate()
+                p.kill()
 
     if p.returncode != 0:
         raise subprocess.CalledProcessError(p.returncode, p.args)

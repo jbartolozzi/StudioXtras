@@ -240,7 +240,6 @@ def runGooey():
                         rop.render(verbose=True, output_progress=True)
                     except:
                         print(traceback.format_exc())
-                        hou.exit(exit_code=0, suppress_save_prompt=True)
         os.remove(gooey_file)
         hou.exit(exit_code=0, suppress_save_prompt=True)
     else:
