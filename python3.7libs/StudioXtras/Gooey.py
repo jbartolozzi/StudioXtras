@@ -39,8 +39,5 @@ def run():
         for line in p.stdout:
             print(line, end='')
             if "error" in line.lower():
-                helper.error(f"Found error in Gooey job.")
+                print(f"Found error in Gooey job.")
                 p.kill()
-                # os.killpg(os.getpgid(pid), signal.SIGTERM)
-    # if p.returncode != 0:
-    #     raise subprocess.CalledProcessError(p.returncode, p.args)
