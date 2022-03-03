@@ -238,7 +238,7 @@ def runGooey():
                     print(f"Gooey Rendering Rop: {rop.path()}")
                     try:
                         rop.render(verbose=True, output_progress=True)
-                    except:
+                    except Exception as e:
                         print(traceback.format_exc())
         os.remove(gooey_file)
         hou.exit(exit_code=0, suppress_save_prompt=True)
