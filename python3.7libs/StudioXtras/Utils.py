@@ -226,11 +226,11 @@ def getGooeyFileName():
 
 
 def runGooey():
-    hou.exit(exit_code=0, suppress_save_prompt=True)
     gooey_file = getGooeyFileName()
     # If gooey file exists render the rop from the gooey file
     if os.path.exists(gooey_file):
         print(f"Found Gooey file {gooey_file}. If this is a mistake, delete the Gooey file and Houdini will start normally.")
+        hou.exit(exit_code=0, suppress_save_prompt=True)
         with open(gooey_file, 'r') as infile:
             json_dict = json.load(infile)
             if "rop" in json_dict:
