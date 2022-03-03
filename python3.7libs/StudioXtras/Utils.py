@@ -244,5 +244,6 @@ def runGooey():
 
         os.remove(gooey_file)
         hou.exit(exit_code=0, suppress_save_prompt=True)
+        print("Gooey Complete")
     else:
         return
