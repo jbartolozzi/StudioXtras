@@ -34,6 +34,7 @@ def run():
     helper.log(f"Running command {command}")
 
     pid = -1
+    failed = False
     with subprocess.Popen(command.split(" "), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
         pid = p.pid
         helper.log(f"Starting process with pid: {pid}")
@@ -41,7 +42,10 @@ def run():
             print(line, end='')
             if "error" in line.lower():
                 helper.error(f"Found error in Gooey job.")
-                os.kill(p.pid, signal.SIGTERM)
+                failed = True
+                break
+    if failed:
+        os.kill(p.pid, signal.SIGKILL)
 
     if p.returncode != 0:
         raise subprocess.CalledProcessError(p.returncode, p.args)
