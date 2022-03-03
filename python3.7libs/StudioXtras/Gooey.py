@@ -37,6 +37,9 @@ def run():
     with subprocess.Popen(command.split(" "), stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
         for line in p.stdout:
             print(line, end='')  # process line here
+            if "Error" in line:
+                p.terminate()
+
 
     if p.returncode != 0:
         raise subprocess.CalledProcessError(p.returncode, p.args)
