@@ -150,6 +150,8 @@ class PathMapper:
                 self.correction_dict = json.load(infile)
                 self.is_valid = True
 
+        print("Loaded pathmap file: " + pathmap_file_path)
+
     def getPathMapFile(self):
         default = os.path.join(os.path.dirname(os.path.dirname(__file__)), "pathmap.json")
         if "C4D_PATHMAP" in os.environ:
