@@ -150,9 +150,14 @@ class PathMapper:
                 self.correction_dict = json.load(infile)
                 self.is_valid = True
 
-        print("Loaded pathmap file: " + pathmap_file_path)
+        print("CheckPaths Loaded Pathmap File: %s." % pathmap_file_path)
 
     def getPathMapFile(self):
+        if "C4D_PATHMAP" not in os.environ:
+            return None
+        else:
+            return os.environ["C4D_PATHMAP"]
+        '''
         default = os.path.join(os.path.dirname(os.path.dirname(__file__)), "pathmap.json")
         if "C4D_PATHMAP" in os.environ:
             return os.environ["C4D_PATHMAP"]
@@ -160,6 +165,7 @@ class PathMapper:
             return default
         else:
             return None
+        '''
 
     def updatePath(self, texture_path):
         def toUnix(inputpath):
@@ -259,6 +265,7 @@ def getAllObjects(doc):
     all_nodes = []
     recurse_hierarchy(doc.GetFirstObject(), all_nodes)
     return all_nodes
+
 
 def main(doc):
 
