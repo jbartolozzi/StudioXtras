@@ -269,11 +269,21 @@ def getAllObjects(doc):
 
 def main(doc):
 
+    all_assets = []
     all_objects = getAllObjects(doc)
-    all_assets = getAllCinemaTextures(doc)
-    all_assets.extend(getAllArnoldTextures(doc))
-    all_assets.extend(getAllCinemaProcedurals(doc, all_objects))
-    all_assets.extend(getAllArnoldProcedurals(doc, all_objects))
+
+    cinema_textures = getAllCinemaTextures(doc)
+    arnols_textures = getAllArnoldTextures(doc)
+    cinema_procedurals = getAllCinemaProcedurals(doc, all_objects)
+    arnold_procedurals = getAllArnoldProcedurals(doc, all_objects)
+
+    all_assets.extend(cinema_textures)
+    all_assets.extend(cinema_procedurals)
+    all_assets.extend(arnols_textures)
+    all_assets.extend(arnold_procedurals)
+
+    print("CheckPaths Found %s C4D Textures, %s C4D Procedurals, %s Arnold Textures, %s Arnold Procedurals" % (
+        len(cinema_textures), len(cinema_procedurals), len(arnols_textures), len(arnold_procedurals)))
 
     num_missing = 0
     num_updated = 0
