@@ -155,6 +155,12 @@ def makeTimestampEnv():
     hou.putenv("TIMESTAMP", timestamp)
 
 
+def editPathmapFile():
+    pathmap_file = os.getenv("STUDIO_XTRAS_PATHMAP", "")
+    if pathmap_file != "":
+        subprocess.Popen(["subl", pathmap_file])
+
+
 def checkFilePaths():
     def toUnix(inputpath):
         return inputpath.replace("\\", "/")
