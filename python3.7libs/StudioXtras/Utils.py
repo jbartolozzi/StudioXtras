@@ -157,8 +157,9 @@ def makeTimestampEnv():
 
 def editPathmapFile():
     pathmap_file = os.getenv("STUDIO_XTRAS_PATHMAP", "")
+    editor = os.getenv("EDITOR", "subl")
     if pathmap_file != "":
-        subprocess.Popen(["subl", pathmap_file])
+        subprocess.Popen([editor, pathmap_file])
 
 
 def checkFilePaths():
