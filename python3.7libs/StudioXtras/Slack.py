@@ -3,6 +3,7 @@ import json
 import os
 from importlib import reload
 from StudioXtras import Utils
+from pathlib import Path
 reload(Utils)
 
 
@@ -64,7 +65,7 @@ def run():
         op = helper.getTargetOutputNode(node)
         if op is None:
             return
-        file = helper.getPictureParm(op).eval().replace(" ", "\\ ")
+        file = str(Path(helper.getPictureParm(op).eval()))#.replace(" ", "\\ ")
         _slackMedia(curl_executable, api_key, channel, message, file, helper)
     else:
         _slackText(curl_executable, api_key, channel, message, helper)
