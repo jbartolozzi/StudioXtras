@@ -5,6 +5,7 @@ import time
 import secrets
 from importlib import reload
 from StudioXtras import Utils
+from pathlib import Path
 reload(Utils)
 
 
@@ -192,10 +193,10 @@ def run():
 
     print("ALF_PROGRESS 75.0%")
     # Prepare directory for output file
-    output_file = node.parm("vm_picture").eval()
+    output_file = str(Path(node.parm("vm_picture").eval()))
     output_directory = os.path.dirname(output_file)
 
-    output_file = output_file.replace(" ", "\\ ")
+    # output_file = output_file.replace(" ", "\\ ")
 
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
