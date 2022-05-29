@@ -9,6 +9,7 @@ from distutils.spawn import find_executable
 
 ROP_OUTPUT_FILE_PARMS = \
     [
+        "RS_outputFileNamePrefix",
         "ar_picture",
         "vm_picture",
         "ri_display_0",
