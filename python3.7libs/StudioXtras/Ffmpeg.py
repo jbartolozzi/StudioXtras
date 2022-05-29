@@ -230,10 +230,10 @@ def run():
 
     cmd_output, cmd_err = Utils.runCommand(ffmpeg_command)
 
-    cmd_err = str(cmd_err)
+    cmd_err = cmd_err.decode("utf-8")
 
     helper.debug(ffmpeg_command)
-    helper.log("%s\n%s" % (cmd_output, cmd_err))
+    helper.log("%s\n%s" % (cmd_output.decode("utf-8"), cmd_err))
 
     files_to_delete.append(list_file)
 
