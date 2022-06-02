@@ -259,9 +259,9 @@ def runGooey():
 
 
 def checkOpenedHDAs(ignore_type=None):
-    if "STUDIO_XTRAS_DISABLE_CHECKPATHS" in os.environ and \
-            os.environ["STUDIO_XTRAS_DISABLE_CHECKPATHS"] == "1":
-        print("Check filepaths disabled. To enable set STUDIO_XTRAS_DISABLE_CHECKPATHS to 0.")
+    if "STUDIO_XTRAS_DISABLE_CHECKHDAS" in os.environ and \
+            os.environ["STUDIO_XTRAS_DISABLE_CHECKHDAS"] == "1":
+        print("Check filepaths disabled. To enable set STUDIO_XTRAS_DISABLE_CHECKHDAS to 0.")
         return
 
     children = list(child for child in
@@ -273,7 +273,7 @@ def checkOpenedHDAs(ignore_type=None):
 
     if len(children):
         details = "\n".join(list(child.path() for child in children))
-        details += "\n\nIf you want to disable this warning set\nSTUDIO_XTRAS_DISABLE_CHECKPATHS = 1"
+        details += "\n\nIf you want to disable this warning set\nSTUDIO_XTRAS_DISABLE_CHECKHDAS = 1"
         hou.ui.displayMessage("The following HDAs are still editable.",
                               title="StudioXtras Warning",
                               details=details,
