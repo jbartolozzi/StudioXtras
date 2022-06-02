@@ -248,6 +248,7 @@ def runGooey():
                     try:
                         rop.render(verbose=True, output_progress=True)
                     except Exception as e:
+                        print(e)
                         print(traceback.format_exc())
 
         os.remove(gooey_file)
@@ -255,3 +256,21 @@ def runGooey():
         print("Gooey Complete")
     else:
         return
+
+
+def checkOpenedHDAs():
+    if "STUDIO_XTRAS_DISABLE_CHECKPATHS" in os.environ and \
+            os.environ["STUDIO_XTRAS_DISABLE_CHECKPATHS"] == "1":
+        print("Check filepaths disabled. To enable set STUDIO_XTRAS_DISABLE_CHECKPATHS to 0.")
+        return
+
+    children = list(child for child in
+                    hou.node("/").allSubChildren(top_down=True, recurse_in_locked_nodes=False)
+                    if child.isEditable() and child.type().definition() is not None and child.type().name() != "localscheduler")
+    if len(children):
+        details = "\n".join(list(child.path() for child in children))
+        details += "\n\nIf you want to disable this warning set\nSTUDIO_XTRAS_DISABLE_CHECKPATHS = 1"
+        hou.ui.displayMessage("The following HDAs are still editable.",
+                              title="StudioXtras Warning",
+                              details=details,
+                              severity=hou.severityType.Warning)
