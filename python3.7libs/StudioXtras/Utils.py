@@ -258,7 +258,7 @@ def runGooey():
         return
 
 
-def checkOpenedHDAs():
+def checkOpenedHDAs(ignore_type=None):
     if "STUDIO_XTRAS_DISABLE_CHECKPATHS" in os.environ and \
             os.environ["STUDIO_XTRAS_DISABLE_CHECKPATHS"] == "1":
         print("Check filepaths disabled. To enable set STUDIO_XTRAS_DISABLE_CHECKPATHS to 0.")
@@ -266,7 +266,11 @@ def checkOpenedHDAs():
 
     children = list(child for child in
                     hou.node("/").allSubChildren(top_down=True, recurse_in_locked_nodes=False)
-                    if child.isEditable() and child.type().definition() is not None and child.type().name() != "localscheduler")
+                    if child.isEditable()
+                    and child.type().definition() is not None
+                    and child.type().name() != "localscheduler"
+                    and child.type() != ignore_type)
+
     if len(children):
         details = "\n".join(list(child.path() for child in children))
         details += "\n\nIf you want to disable this warning set\nSTUDIO_XTRAS_DISABLE_CHECKPATHS = 1"
