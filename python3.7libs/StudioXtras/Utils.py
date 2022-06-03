@@ -218,7 +218,12 @@ def checkFilePaths():
     results = [thread.result() for thread in threads]
     for parm_path, corrected in results:
         if corrected:
-            hou.parm(parm_path).set(corrected)
+            parm = hou.parm(parm_path)
+            if not parm.isLocked():
+                try:
+                    parm.set(corrected)
+                except hou.PermissionError:
+                    pass
             num_corrected += 1
 
     tend = time.perf_counter()
