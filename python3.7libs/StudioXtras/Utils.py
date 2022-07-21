@@ -273,7 +273,8 @@ def checkOpenedHDAs(ignore_type=None):
                     hou.node("/").allSubChildren(top_down=True, recurse_in_locked_nodes=False)
                     if child.isEditable()
                     and child.type().definition() is not None
-                    and child.type().name() != "localscheduler"
+                    and not child.matchesCurrentDefinition()
+                    and child.type().name() not in ["localscheduler", ]
                     and child.type() != ignore_type)
 
     if len(children):
